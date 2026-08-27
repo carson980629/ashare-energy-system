@@ -166,7 +166,7 @@ footer{text-align:center;font-size:10px;color:var(--muted);padding:20px 0 40px}
       <div class="hero-right">
         <div class="label">本周精力预算</div>
         <div class="battery"><div class="battery-shell"><div id="batteryFill" class="battery-fill" style="width:10%"></div></div><div id="batteryNum" class="battery-num">10%</div></div>
-        <div class="time-budget">每周投入 <b id="timeBudget">5 分钟</b> 即可</div>
+        <div class="time-budget">每周投入 <b id="timeBudget">10—15 分钟</b> 即可</div>
       </div>
     </div>
   </section>
@@ -213,7 +213,7 @@ footer{text-align:center;font-size:10px;color:var(--muted);padding:20px 0 40px}
   <!-- 精力 ROI 账本 -->
   <div class="section-title"><h2>精力 ROI 账本</h2><span>聪明地偷懒，比盲目地勤奋更划算</span></div>
   <div class="card roi-rows">
-    <div class="roi-row"><div class="t"><b>本周节省的无谓盯盘时间</b><span>对比“每天盯盘约30分钟”的基线，按当前“每周5分钟”作息</span></div><div class="v" id="savedTime">≈ 2.4 小时</div></div>
+    <div class="roi-row"><div class="t"><b>本周节省的无谓盯盘时间</b><span id="savedTimeBasis">对比“每天盯盘约30分钟”的基线，按当前“每周10—15分钟”作息</span></div><div class="v" id="savedTime">≈ 2.3 小时</div></div>
     <div class="roi-row"><div class="t"><b>因空仓/低仓少亏的金额</b><span>需接入你的真实持仓与历史数据后生效</span></div><div class="v na">待接入账户</div></div>
     <div class="roi-row"><div class="t"><b>顺势加仓带来的收益</b><span>进攻期才会产生，当前处于防守期，暂不计</span></div><div class="v na">当前未开启</div></div>
   </div>
@@ -260,29 +260,29 @@ const SNAP = {
   ]
 };
 const ENERGY = {
-  bull:{key:"sun",weather:"阳光明媚",emoji:"☀️",mode:"加班搞钱期",tagline:"满电进攻 · 事半功倍",time:"每周 3~5 小时",energy:90,pos:"V2参考仓位 75%~100%",
+  bull:{key:"sun",weather:"阳光明媚",emoji:"☀️",mode:"加班搞钱期",tagline:"满电进攻 · 事半功倍",time:"每周 3—5 小时",minutes:240,energy:90,pos:"V2参考仓位 75%~100%",
     sub:"全市场上升趋势确立，赚钱效应扩散。此时投入精力产出最高，值得研究复合动量Top 2并顺势而为。",
     dos:["认真学习领涨行业与ETF","核对复合动量Top 2","检查持仓是否跌破自身MA4"],
     donts:["因恐高而过早下车","频繁做短线 T、来回折腾","追买情绪已经过热的题材"],
     pass:"东风送暖，赚钱效应扩散。本周值得多花精力，研究领涨ETF并顺势而为。",
     stamp:"开搞"},
-  shock:{key:"cloud",weather:"多云转阴",emoji:"⛅",mode:"佛系打卡期",tagline:"躺平压舱 · 少看少动",time:"每周 15 分钟",energy:30,pos:"V2参考仓位 40%~60%",
-    sub:"市场多空拉锯、热点切换较快。只从站上MA12的ETF中选择复合动量Top 2，避免死守弱势方向。",
-    dos:["周五14:45打卡看一眼","核对MA12之上的动量Top 2","按规则保持仓位，不追日内热点"],
+  shock:{key:"cloud",weather:"多云转阴",emoji:"⛅",mode:"佛系打卡期",tagline:"躺平压舱 · 少看少动",time:"每周 30—45 分钟",minutes:37.5,energy:30,pos:"V2参考仓位 40%~60%",
+    sub:"市场多空拉锯、热点切换较快。每周预留30—45分钟核对趋势、持仓与执行条件，不追逐日内噪音。",
+    dos:["周五14:45开始核对信号","检查MA12之上的动量Top 2","用30—45分钟完成复盘与调仓"],
     donts:["听小道消息追高","每天盯盘猜涨跌","频繁切换热点板块"],
-    pass:"市场多云震荡，只需周五花15分钟核对一次信号，其余时间安心生活。",
+    pass:"市场多云震荡，本周只需预留30—45分钟完成核对与必要调仓，其余时间安心生活。",
     stamp:"省电"},
-  bear:{key:"rain",weather:"阴雨绵绵",emoji:"🌧️",mode:"休假减负期",tagline:"低电量休眠 · 0%权益",time:"每周 5 分钟",energy:10,pos:"V2参考仓位 0%（100%现金）",
-    sub:"市场有短线回暖，但中期趋势尚未转强。V2选择完全空仓，把精力留给主业更划算。",
-    dos:["维持100%现金或低风险工具","专注本职工作，在场外积累现金流","周五14:45瞄一眼系统信号"],
+  bear:{key:"rain",weather:"阴雨绵绵",emoji:"🌧️",mode:"休假减负期",tagline:"低电量休眠 · 0%权益",time:"每周 10—15 分钟",minutes:12.5,energy:10,pos:"V2参考仓位 0%（100%现金）",
+    sub:"市场有短线回暖，但中期趋势尚未转强。V2选择完全空仓，每周只留10—15分钟确认状态即可。",
+    dos:["维持100%现金或低风险工具","专注本职工作，在场外积累现金流","周五用10—15分钟确认系统信号"],
     donts:["盲目抄底接飞刀","频繁加仓摊平成本","被阴跌行情搞崩心态"],
-    pass:"本周市场仍处阴雨，V2已切换为100%现金。下周无需盯盘，放心去生活、去工作。",
+    pass:"本周市场仍处阴雨，V2已切换为100%现金。每周用10—15分钟确认状态即可，其余时间放心生活、工作。",
     stamp:"休假"},
-  crisis:{key:"storm",weather:"特大暴风雪",emoji:"❄️",mode:"强制休眠期",tagline:"拔网线 · 0%权益",time:"每周 0 分钟",energy:0,pos:"V2参考仓位 0%（100%现金）",
-    sub:"市场处于系统性出清阶段，任何主观努力都无效。关掉软件，是当下最优策略。",
-    dos:["切换为现金 / 国债逆回购","把炒股 App 移入二级文件夹","健身、读书、陪伴家人"],
+  crisis:{key:"storm",weather:"特大暴风雪",emoji:"❄️",mode:"强制休眠期",tagline:"拔网线 · 0%权益",time:"每周少于 5 分钟",minutes:5,energy:0,pos:"V2参考仓位 0%（100%现金）",
+    sub:"市场处于系统性出清阶段，不做研究和择时，只用不到5分钟确认系统仍处危机状态。",
+    dos:["切换为现金 / 国债逆回购","每周快速确认一次危机状态","健身、读书、陪伴家人"],
     donts:["进行任何买入操作","频繁刷新行情软件","在恐慌中割肉离场"],
-    pass:"市场风雪交加，系统已为你空仓避险。彻底关掉软件，好好休息。",
+    pass:"市场风雪交加，系统已为你空仓避险。每周花不到5分钟确认状态后，彻底关掉软件。",
     stamp:"冬眠"}
 };
 const REGIME_KEY = { bull:"多头进攻态", shock:"中性震荡态", bear:"弱势防守态", crisis:"极端空头态" };
@@ -334,7 +334,9 @@ function render(){
   $("kvRegime").textContent = REGIME_KEY[regime] + "（" + cfg.mode + "）";
   $("kvEquity").textContent = cfg.pos;
   $("compBar").style.width = fmtPct(b.comp);
-  const savedH = (2.5 - 5/60).toFixed(1);
+  const weeklyBaselineMinutes = 5 * 30;
+  const savedH = Math.max(0, (weeklyBaselineMinutes - cfg.minutes) / 60).toFixed(1);
+  $("savedTimeBasis").textContent = `对比“每个交易日盯盘约30分钟”的基线，按当前“${cfg.time}”作息`;
   $("savedTime").textContent = "≈ " + savedH + " 小时";
 }
 const urgeText = {
