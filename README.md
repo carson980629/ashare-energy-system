@@ -58,7 +58,7 @@ node scripts/update-data.mjs
 node scripts/validate.mjs
 ```
 
-更新完成后刷新 `tianshi.html`（精力作息台）和 `index.html`（策略监测台），两者都会读取新的 `data/history-baked.js`。数据配置、未完成周处理和供应商替换边界见 [数据接入说明](./docs/DATA.md)。
+更新完成后刷新 `tianshi.html`（精力作息台）和 `index.html`（策略监测台），两者都会读取新的 `data/history-baked.js`。自动更新范围是宽基周线、市场状态和内部对照回测；新闻分析快照与用户V2样例净值不会自动重写。数据配置、未完成周处理和供应商替换边界见 [数据接入说明](./docs/DATA.md)。
 
 ## 样例回测
 
