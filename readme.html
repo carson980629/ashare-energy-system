@@ -37,7 +37,7 @@
 # 访问 http://localhost:8000/project.html</code></pre>
     <h3>更新市场数据</h3><pre><code>cp config/data-source.example.json config/data-source.json
 node scripts/update-data.mjs
-node scripts/validate.mjs</code></pre>
+node scripts/validate.mjs</code></pre><p>更新完成后刷新精力作息台和策略监测台，两者都会读取新的 <code>data/history-baked.js</code>。默认剔除尚未完成的当周周线。</p>
 
     <h2>样例回测</h2>
     <p>仓库包含 2023-01-02 至 2026-08-24 的 187 周 V2 样例 CSV。页面按净值序列复算：累计收益 +47.4%、几何年化 +11.2%、最大回撤 -10.8%、年化波动 16.6%、夏普 0.74、卡玛 1.04。</p>

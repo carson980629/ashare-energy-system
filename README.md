@@ -58,7 +58,7 @@ node scripts/update-data.mjs
 node scripts/validate.mjs
 ```
 
-数据配置与供应商替换方法见 [数据接入说明](./docs/DATA.md)。
+更新完成后刷新 `tianshi.html`（精力作息台）和 `index.html`（策略监测台），两者都会读取新的 `data/history-baked.js`。数据配置、未完成周处理和供应商替换边界见 [数据接入说明](./docs/DATA.md)。
 
 ## 样例回测
 

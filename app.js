@@ -11,7 +11,7 @@ const ETF_META = [
 
 const VERIFIED_SNAPSHOT = {
   date: "2026-08-27",
-  source: "腾讯行情·前复权周线（2026-08-27 周）",
+  source: "腾讯行情·宽基指数原始周线（2026-08-27 周）",
   rows: [
     { code: "000016", close: 2930.31, ma20: 2923, ma60: 2918, ma120: 2916 },
     { code: "000300", close: 4630.28, ma20: 4652, ma60: 4716, ma120: 4722 },
@@ -77,7 +77,7 @@ function computeSnapshot() {
       long: rows.filter((x) => x.long).length / rows.length
     };
     breadth.comp = 0.35 * breadth.short + 0.45 * breadth.mid + 0.20 * breadth.long;
-    return { rows, breadth, date: state.history.dates[idx], source: "腾讯行情·前复权周线" };
+    return { rows, breadth, date: state.history.dates[idx], source: "腾讯行情·宽基指数原始周线" };
   }
   const s = snapshotSignals();
   return { ...s, date: VERIFIED_SNAPSHOT.date, source: VERIFIED_SNAPSHOT.source };
@@ -416,7 +416,7 @@ function renderPerformance() {
   $("turnover").textContent = bt.sourceType === "user-csv" ? bt.calmar.toFixed(2) : fmtPct(bt.annualTurnover, 0);
   $("performancePeriod").textContent = bt.sourceType === "user-csv"
     ? `${bt.startDate} 至 ${bt.endDate} · V2增强版周度CSV（日期为周标签）· 指标按净值序列重算`
-    : `${bt.startDate} 至 ${bt.endDate} · 前复权周线 · 单边成本 ${state.params.costBps}bp`;
+    : `${bt.startDate} 至 ${bt.endDate} · 宽基指数原始周线 · 单边成本 ${state.params.costBps}bp`;
   if ($("perfBenchmarkSummary")) {
     if (bt.sourceType === "user-csv") {
       const v1Return = bt.records.at(-1).v1 / bt.records[0].v1 - 1;
@@ -706,7 +706,7 @@ function loadBakedHistory() {
   $("sideSyncTime").textContent = state.performanceBacktest ? `策略表现截至 ${state.performanceBacktest.endDate}` : `截至 ${H.asof} 周`;
   $("historySource").textContent = state.performanceBacktest
     ? `用户提供周度回测 CSV · ${state.performanceBacktest.startDate} 至 ${state.performanceBacktest.endDate}`
-    : `腾讯行情·前复权周线（6只宽基指数）· ${H.start} 至 ${H.asof}`;
+    : `腾讯行情·宽基指数原始周线（6只宽基指数）· ${H.start} 至 ${H.asof}`;
   $("auditDataBadge").textContent = state.performanceBacktest ? "用户回测已接入" : "已接入真实数据";
   $("auditDataBadge").className = "badge ok";
   return true;

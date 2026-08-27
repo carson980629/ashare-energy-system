@@ -24,6 +24,7 @@ const expectedCodes = ["000016", "000300", "000905", "000852", "399006", "000688
 if (!history || !Array.isArray(history.dates) || history.dates.length < 24) throw new Error("历史周线少于24个共同交易周");
 if (history.count !== history.dates.length) throw new Error("history.count 与 dates 长度不一致");
 if (history.start !== history.dates[0] || history.asof !== history.dates.at(-1)) throw new Error("历史数据起止元数据不一致");
+if (!String(history.adjust || "").includes("原始指数点位")) throw new Error("指数数据口径必须明确标注为原始指数点位");
 if (new Set(history.dates).size !== history.dates.length) throw new Error("历史数据日期重复");
 for (const code of expectedCodes) {
   const rows = history.close?.[code];

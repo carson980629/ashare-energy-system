@@ -28,13 +28,15 @@ function shanghaiDate() {
 
 function validateConfig(config) {
   if (config.provider !== "tencent-fqkline") throw new Error(`不支持的数据源：${config.provider}`);
+  if (config.frequency !== "week") throw new Error("当前适配器仅支持 week 周线");
   if (!Array.isArray(config.symbols) || config.symbols.length !== 6) throw new Error("symbols 必须恰好包含6只宽基");
   const codes = new Set(config.symbols.map((item) => item.code));
   if (codes.size !== config.symbols.length) throw new Error("symbols.code 存在重复");
 }
 
 async function fetchSymbol(config, symbol, endDate) {
-  const param = [symbol.requestCode, config.frequency, config.startDate, endDate, 1000, config.adjust].join(",");
+  const adjustParam = config.adjust === "none" ? "" : config.adjust;
+  const param = [symbol.requestCode, config.frequency, config.startDate, endDate, 1000, adjustParam].join(",");
   const url = new URL(config.endpoint);
   url.searchParams.set("param", param);
   const response = await fetch(url, { signal: AbortSignal.timeout(config.timeoutMs || 15000) });
@@ -53,9 +55,13 @@ async function fetchSymbol(config, symbol, endDate) {
   });
 }
 
-function align(series, symbols, minimumCommonRows) {
+function align(series, symbols, minimumCommonRows, includeIncompleteWeek) {
   const dateSets = symbols.map((symbol) => new Set(series[symbol.code].map((row) => row.date)));
-  const commonDates = [...dateSets[0]].filter((date) => dateSets.every((set) => set.has(date))).sort();
+  let commonDates = [...dateSets[0]].filter((date) => dateSets.every((set) => set.has(date))).sort();
+  if (!includeIncompleteWeek && commonDates.length && commonDates.at(-1) === shanghaiDate()) {
+    const weekday = new Date(`${commonDates.at(-1)}T12:00:00+08:00`).getUTCDay();
+    if (weekday >= 1 && weekday <= 4) commonDates = commonDates.slice(0, -1);
+  }
   if (commonDates.length < minimumCommonRows) {
     throw new Error(`共同交易周仅 ${commonDates.length}，少于要求的 ${minimumCommonRows}`);
   }
@@ -71,12 +77,13 @@ const config = await loadConfig();
 validateConfig(config);
 const endDate = config.endDate === "auto" ? shanghaiDate() : config.endDate;
 const entries = await Promise.all(config.symbols.map(async (symbol) => [symbol.code, await fetchSymbol(config, symbol, endDate)]));
-const aligned = align(Object.fromEntries(entries), config.symbols, config.minimumCommonRows || 24);
+const aligned = align(Object.fromEntries(entries), config.symbols, config.minimumCommonRows || 24, config.includeIncompleteWeek === true);
 const artifact = {
   freq: "weekly",
   source: "腾讯行情公开接口·宽基指数周线",
   provider: config.provider,
-  adjust: `前复权(${config.adjust})`,
+  adjust: "原始指数点位（指数无需复权）",
+  incompleteWeekIncluded: config.includeIncompleteWeek === true,
   asof: aligned.dates.at(-1),
   start: aligned.dates[0],
   count: aligned.dates.length,

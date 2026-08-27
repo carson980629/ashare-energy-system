@@ -230,7 +230,7 @@ footer{text-align:center;font-size:10px;color:var(--muted);padding:20px 0 40px}
       <div class="kv"><span>判定状态</span><b id="kvRegime">弱势防守态（休假减负期）</b></div>
       <div class="kv"><span>V2参考权益仓位</span><b id="kvEquity">0%（100%现金）</b></div>
       <div style="margin-top:14px"><div class="kv" style="border:0;padding-bottom:4px"><span>市场温度计</span><span style="font-family:Georgia,serif">危机&nbsp;&nbsp;防守&nbsp;&nbsp;震荡&nbsp;&nbsp;进攻</span></div><div class="bar"><i id="compBar" style="width:31.7%"></i></div></div>
-      <p class="disclosure" style="margin-top:16px"><b>数据来源</b>：六只核心宽基指数（上证50 / 沪深300 / 中证500 / 中证1000 / 创业板指 / 科创50）2026-08-27 周收盘前复权周线，来源腾讯行情。综合市场温度 = 35%×短期 + 45%×中期 + 20%×长期。V2规则：多头75%—100%，震荡40%—60%，弱势与危机0%；选标使用全池复合动量、Top3迟滞与单标的MA4六折平抑。一般使用者周五14:45核对预估信号，交易规则与完整执行说明见“策略监测台”。</p>
+      <p class="disclosure" style="margin-top:16px"><b>数据来源</b>：<span id="energyDataSource">等待本地烘焙周线</span>。观察6只核心宽基指数（上证50 / 沪深300 / 中证500 / 中证1000 / 创业板指 / 科创50），综合市场温度 = 35%×短期 + 45%×中期 + 20%×长期。V2规则：多头75%—100%，震荡40%—60%，弱势与危机0%；选标使用全池复合动量、Top3迟滞与单标的MA4六折平抑。一般使用者周五14:45核对预估信号，交易规则与完整执行说明见“策略监测台”。</p>
     </div>
   </details>
 
@@ -242,14 +242,15 @@ footer{text-align:center;font-size:10px;color:var(--muted);padding:20px 0 40px}
 <div id="overlay" class="overlay"><div class="modal"><div id="modalEmoji" class="emoji">⛈️</div><h3 id="modalTitle">顶风作案预警</h3><p id="modalText"></p><button class="close" id="modalClose">我知道了</button></div></div>
 <div id="toast" class="toast"></div>
 
+<script src="./data/history-baked.js"></script>
 <script>
 "use strict";
 const ETF = [
   {code:"510050",name:"上证50ETF"},{code:"510300",name:"沪深300ETF"},{code:"510500",name:"中证500ETF"},
   {code:"512100",name:"中证1000ETF"},{code:"159915",name:"创业板ETF"},{code:"588000",name:"科创50ETF"}
 ];
-const SNAP = {
-  date:"2026-08-27", source:"腾讯行情·前复权周线（2026-08-27 周）",
+const FALLBACK_SNAPSHOT = {
+  date:"2026-08-27", source:"内嵌兜底快照·宽基指数周线（2026-08-27 周）",
   rows:[
     {code:"000016",close:2930.31,ma20:2923,ma60:2918,ma120:2916},
     {code:"000300",close:4630.28,ma20:4652,ma60:4716,ma120:4722},
@@ -288,6 +289,23 @@ const ENERGY = {
 const REGIME_KEY = { bull:"多头进攻态", shock:"中性震荡态", bear:"弱势防守态", crisis:"极端空头态" };
 const $ = id => document.getElementById(id);
 const fmtPct = (v,d=1)=> (v*100).toFixed(d)+"%";
+function meanClose(values,n){
+  if(!Array.isArray(values)||values.length<n) return null;
+  return values.slice(-n).reduce((sum,value)=>sum+value,0)/n;
+}
+function activeSnapshot(){
+  const h=window.BAKED_HISTORY;
+  if(!h||!Array.isArray(h.dates)||h.dates.length<24||!h.close) return FALLBACK_SNAPSHOT;
+  const codes=["000016","000300","000905","000852","399006","000688"];
+  const rows=codes.map(code=>{
+    const values=h.close[code];
+    if(!Array.isArray(values)||values.length!==h.dates.length) return null;
+    return {code,close:values.at(-1),ma20:meanClose(values,4),ma60:meanClose(values,12),ma120:meanClose(values,24)};
+  });
+  if(rows.some(row=>!row||![row.close,row.ma20,row.ma60,row.ma120].every(Number.isFinite))) return FALLBACK_SNAPSHOT;
+  return {date:h.asof,source:`${h.source} · ${h.adjust}`,rows};
+}
+const SNAP=activeSnapshot();
 function compute(){
   const rows = SNAP.rows.map(r=>({...r, short:r.close>r.ma20, mid:r.close>r.ma60, long:r.close>r.ma120}));
   const b = { short:rows.filter(x=>x.short).length/6, mid:rows.filter(x=>x.mid).length/6, long:rows.filter(x=>x.long).length/6 };
@@ -333,6 +351,7 @@ function render(){
   $("kvComp").textContent = (b.comp*100).toFixed(1) + " / 100";
   $("kvRegime").textContent = REGIME_KEY[regime] + "（" + cfg.mode + "）";
   $("kvEquity").textContent = cfg.pos;
+  $("energyDataSource").textContent = `${SNAP.source}，截至 ${SNAP.date}`;
   $("compBar").style.width = fmtPct(b.comp);
   const weeklyBaselineMinutes = 5 * 30;
   const savedH = Math.max(0, (weeklyBaselineMinutes - cfg.minutes) / 60).toFixed(1);
