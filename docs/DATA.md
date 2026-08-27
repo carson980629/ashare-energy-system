@@ -8,14 +8,14 @@
 
 默认 `provider` 为 `tencent-fqkline`，使用腾讯公开行情接口。接口并非本项目维护，也没有官方 SLA，可能限流、调整字段或停止服务。生产用途应替换为获得授权的数据供应商。
 
-接口周线数组按2026-08-27实际请求观测为：`[date, open, close, high, low, volume]`。脚本只使用日期和收盘价，并对格式、正数值和共同周数做检查。腾讯返回的最后一条可能是未完成的滚动周线，默认配置会在周一至周四剔除它。
+接口周线数组按2026-08-27实际请求观测为：`[date, open, close, high, low, volume]`。脚本只使用日期和收盘价，并对格式、正数值和共同周数做检查。腾讯返回的最后一条可能是未完成的滚动周线，默认配置会在周一至周四以及周五15:05前剔除它。
 
 ## 配置字段
 
 - `endpoint`：行情接口地址。
 - `frequency`：默认 `week`。
 - `adjust`：默认 `none`。当前6个标的是宽基指数，腾讯接口返回原始指数点位；指数不存在股票分红除权意义上的前复权。
-- `includeIncompleteWeek`：默认 `false`。周一至周四更新时剔除尚未完成的当周周线；设为 `true` 可保留滚动中的当周数据。
+- `includeIncompleteWeek`：默认 `false`。周一至周四以及周五收盘前更新时，剔除尚未完成的当周周线；设为 `true` 可保留滚动中的当周数据。
 - `startDate` / `endDate`：请求区间，`endDate: auto` 使用 Asia/Shanghai 当天日期。
 - `minimumCommonRows`：六个序列对齐后允许的最少共同周数。
 - `timeoutMs`：单次请求超时。

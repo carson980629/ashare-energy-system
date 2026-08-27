@@ -129,6 +129,8 @@ function narrativeOf(regime, b) {
 function renderSnapshot() {
   const snap = computeSnapshot();
   const regime = regimeOf(snap.breadth);
+  if ($("snapshotDate")) $("snapshotDate").textContent = snap.date.replace(/^(\d{4})-(\d{2})-(\d{2})$/, "$1年$2月$3日");
+  if ($("snapshotSource")) $("snapshotSource").textContent = `数据：${snap.source}`;
   const info = REGIME[regime];
   const dd = state.backtest?.currentDrawdown ?? 0;
   const latestV2 = state.performanceBacktest?.records?.at(-1);

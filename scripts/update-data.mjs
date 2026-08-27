@@ -17,13 +17,21 @@ async function loadConfig() {
   }
 }
 
-function shanghaiDate() {
-  return new Intl.DateTimeFormat("en-CA", {
+function shanghaiNow() {
+  const parts = Object.fromEntries(new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Shanghai",
     year: "numeric",
     month: "2-digit",
-    day: "2-digit"
-  }).format(new Date());
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23"
+  }).formatToParts(new Date()).filter((part) => part.type !== "literal").map((part) => [part.type, part.value]));
+  return { date: `${parts.year}-${parts.month}-${parts.day}`, hour: Number(parts.hour), minute: Number(parts.minute) };
+}
+
+function shanghaiDate() {
+  return shanghaiNow().date;
 }
 
 function validateConfig(config) {
@@ -59,8 +67,11 @@ function align(series, symbols, minimumCommonRows, includeIncompleteWeek) {
   const dateSets = symbols.map((symbol) => new Set(series[symbol.code].map((row) => row.date)));
   let commonDates = [...dateSets[0]].filter((date) => dateSets.every((set) => set.has(date))).sort();
   if (!includeIncompleteWeek && commonDates.length && commonDates.at(-1) === shanghaiDate()) {
-    const weekday = new Date(`${commonDates.at(-1)}T12:00:00+08:00`).getUTCDay();
-    if (weekday >= 1 && weekday <= 4) commonDates = commonDates.slice(0, -1);
+    const latestDate = commonDates.at(-1);
+    const weekday = new Date(`${latestDate}T12:00:00+08:00`).getUTCDay();
+    const now = shanghaiNow();
+    const fridayClosed = weekday === 5 && (now.hour > 15 || (now.hour === 15 && now.minute >= 5));
+    if ((weekday >= 1 && weekday <= 4) || (weekday === 5 && !fridayClosed)) commonDates = commonDates.slice(0, -1);
   }
   if (commonDates.length < minimumCommonRows) {
     throw new Error(`共同交易周仅 ${commonDates.length}，少于要求的 ${minimumCommonRows}`);
