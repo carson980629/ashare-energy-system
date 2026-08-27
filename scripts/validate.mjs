@@ -1,11 +1,12 @@
 import { readFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const requiredFiles = [
-  "project.html", "project.css", "tianshi.html", "index.html", "styles.css", "app.js",
+  "project.html", "project.css", "readme.html", "tianshi.html", "index.html", "styles.css", "app.js",
   "data/history-baked.js", "data/user-backtest-data.js", "data/v2-enhanced-weekly-data.csv",
   "config/data-source.example.json", "README.md", "LICENSE"
 ];
@@ -32,15 +33,25 @@ for (const code of expectedCodes) {
 if (!backtest || !Array.isArray(backtest.rows) || backtest.rows.length < 2) throw new Error("样例回测数据无效");
 if (backtest.rows.some((row) => !Number.isFinite(row.nav) || row.nav <= 0)) throw new Error("样例回测净值无效");
 
-const htmlFiles = ["project.html", "tianshi.html", "index.html"];
+const htmlFiles = ["project.html", "readme.html", "tianshi.html", "index.html"];
 for (const file of htmlFiles) {
   const html = await readFile(resolve(root, file), "utf8");
-  for (const match of html.matchAll(/(?:src|href)="(\.\/[^"?#]+)[^\"]*"/g)) {
-    const target = match[1].slice(2);
-    if (/^https?:/.test(target) || target.endsWith(".md")) continue;
+  for (const match of html.matchAll(/(?:src|href)="([^"?#]+)[^"]*"/g)) {
+    const rawTarget = match[1];
+    if (/^(?:https?:|mailto:|data:|javascript:)/.test(rawTarget)) continue;
+    const target = rawTarget.replace(/^\.\//, "");
     try { await readFile(resolve(root, target)); }
     catch { throw new Error(`${file} 引用了不存在的本地文件：${target}`); }
   }
 }
 
-console.log(`校验通过：${history.count} 个共同周，${backtest.rows.length} 条样例回测记录，${requiredFiles.length} 个核心文件。`);
+const screenshotFiles = ["energy-console.png", "strategy-overview.png", "strategy-guide.png", "performance.png"];
+const screenshotHashes = new Set();
+for (const file of screenshotFiles) {
+  const content = await readFile(resolve(root, "assets/screenshots", file));
+  if (content.length < 20_000) throw new Error(`${file} 文件异常小，可能是空白或损坏截图`);
+  screenshotHashes.add(createHash("sha256").update(content).digest("hex"));
+}
+if (screenshotHashes.size !== screenshotFiles.length) throw new Error("项目截图存在重复文件，可能引用了错误内容");
+
+console.log(`校验通过：${history.count} 个共同周，${backtest.rows.length} 条样例回测记录，${requiredFiles.length} 个核心文件，${screenshotFiles.length} 张独立截图。`);

@@ -1,6 +1,6 @@
 # A股精力管理系统
 
-用六只核心宽基的趋势广度判断市场天气，把仓位纪律与盯盘精力放进同一套规则里。
+用6只核心宽基的趋势广度判断市场天气，把仓位纪律与盯盘精力放进同一套规则里。
 
 ![精力作息台](./assets/screenshots/energy-console.png)
 
@@ -9,7 +9,7 @@
 这是一个纯 HTML / CSS / JavaScript 的 A 股市场状态研究原型，提供两个入口：
 
 - `tianshi.html`：面向普通投资者的精力作息台，把市场状态翻译为时间预算、行动与禁止事项。
-- `index.html`：面向进阶使用者的策略监测台，展示六宽基广度、V1/V2 规则、ETF 配置、样例回测和数据审计。
+- `index.html`：面向进阶使用者的策略监测台，展示6只ETF对应宽基的广度、V1/V2 规则、ETF 配置、样例回测和数据审计。
 - `project.html`：适合项目展示和 GitHub Pages 的图文详情页。
 
 项目不依赖框架或后端，下载后可直接打开；维护数据需要 Node.js 20+，不需要安装第三方包。
@@ -71,6 +71,7 @@ node scripts/validate.mjs
 ```text
 .
 ├── project.html              # 图文项目详情
+├── readme.html               # 浏览器可读的README页面
 ├── tianshi.html              # 精力作息入口
 ├── index.html                # 策略监测台
 ├── app.js / styles.css       # 策略台逻辑与样式

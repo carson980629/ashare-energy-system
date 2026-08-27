@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <meta name="description" content="A股精力管理系统项目说明与快速开始。">
+  <title>README｜A股精力管理系统</title>
+  <link rel="stylesheet" href="./project.css">
+  <style>
+    .readme{max-width:880px;margin:0 auto;padding:72px 22px 96px}.readme h1{font:700 46px/1.2 "Songti SC",Georgia,serif;margin:0 0 18px}.readme h2{font-size:25px;margin:48px 0 14px}.readme h3{font-size:16px;margin:28px 0 10px}.readme p,.readme li{color:#bdc7c0;font-size:14px}.readme li{margin:8px 0}.readme a{color:var(--blue)}.readme img{width:100%;height:auto;border:1px solid var(--line);margin:22px 0}.readme pre{margin:14px 0}.readme code{color:#c9d4cd}.readme .lead{font-size:17px}.readme .notice{border-left:3px solid var(--amber);background:var(--surface);padding:16px 18px;margin:24px 0}.readme .notice p{margin:0}.readme .file-tree{white-space:pre;overflow:auto}.readme-nav{display:flex;gap:12px;margin-top:28px}.readme-nav a{border:1px solid var(--line);padding:9px 13px;text-decoration:none;font-size:12px;color:var(--text)}@media(max-width:560px){.readme{padding:48px 15px 72px}.readme h1{font-size:36px}.readme h2{font-size:22px}}
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="./project.html"><span>能</span><b>A股精力管理系统</b></a>
+    <nav aria-label="项目导航"><a href="./project.html">项目详情</a><a href="./tianshi.html">精力作息台</a><a href="./index.html">策略监测台</a></nav>
+  </header>
+  <main class="readme">
+    <p class="eyebrow">PROJECT README</p>
+    <h1>A股精力管理系统</h1>
+    <p class="lead">用6只核心宽基的趋势广度判断市场天气，把仓位纪律与盯盘精力放进同一套规则里。</p>
+    <div class="readme-nav"><a href="./tianshi.html">打开精力作息台</a><a href="./index.html?view=strategies">查看策略规则</a></div>
+    <img src="./assets/screenshots/energy-console.png" alt="A股精力管理系统精力作息台">
+
+    <h2>这是什么</h2>
+    <p>这是一个纯 HTML、CSS 和 JavaScript 的 A 股市场状态研究原型，下载后可以直接打开，不依赖框架、后端或数据库。</p>
+    <ul><li><code>tianshi.html</code>：面向普通投资者的精力作息台。</li><li><code>index.html</code>：面向进阶使用者的策略监测台。</li><li><code>project.html</code>：适合项目展示和 GitHub Pages 的图文详情页。</li></ul>
+
+    <h2>核心模型</h2>
+    <p>系统观察上证50、沪深300、中证500、中证1000、创业板指和科创50：</p>
+    <ol><li>判断周收盘是否站上 MA4、MA12、MA24。</li><li>计算短、中、长期市场广度。</li><li>使用 <code>综合广度 = 35% × B4 + 45% × B12 + 20% × B24</code>。</li><li>把市场分为多头、震荡、防守、危机。</li><li>V2 再按状态决定总仓位，并使用复合动量、Top 3 迟滞和 MA4 六折平抑。</li></ol>
+
+    <h2>快速开始</h2>
+    <h3>直接打开</h3><p>下载仓库后打开 <code>tianshi.html</code>。浏览器会读取已烘焙的周线和样例回测。</p>
+    <h3>本地服务</h3><pre><code>python -m http.server 8000
+# 访问 http://localhost:8000/project.html</code></pre>
+    <h3>更新市场数据</h3><pre><code>cp config/data-source.example.json config/data-source.json
+node scripts/update-data.mjs
+node scripts/validate.mjs</code></pre>
+
+    <h2>样例回测</h2>
+    <p>仓库包含 2023-01-02 至 2026-08-24 的 187 周 V2 样例 CSV。页面按净值序列复算：累计收益 +47.4%、几何年化 +11.2%、最大回撤 -10.8%、年化波动 16.6%、夏普 0.74、卡玛 1.04。</p>
+    <div class="notice"><p>这些数字不是实盘业绩。回测采用最终周收盘信号并假设同收盘价成交，可能低估滑点并含同收盘成交偏差。</p></div>
+
+    <h2>目录</h2>
+    <pre class="file-tree"><code>project.html              图文项目详情
+tianshi.html              精力作息入口
+index.html                策略监测台
+app.js / styles.css       策略台逻辑与样式
+data/                     浏览器数据与样例回测
+config/                   数据源配置模板
+scripts/                  更新与校验脚本
+docs/                     模型、数据、架构与风险文档
+assets/screenshots/       页面截图</code></pre>
+
+    <h2>验证</h2><pre><code>node --check app.js
+node --check scripts/update-data.mjs
+node --check scripts/validate.mjs
+node scripts/validate.mjs</code></pre>
+
+    <h2>数据与合规边界</h2>
+    <ul><li>默认腾讯行情适配器属于非官方公开接口，没有稳定性或长期可用性保证。</li><li>仓库不包含账户、密钥、交易接口或自动下单能力。</li><li>行情、策略信号和样例回测仅供研究与产品原型验证，不构成投资建议。</li><li>任何策略都可能失效，过往表现不预示未来收益。</li></ul>
+
+    <h2>License</h2><p>代码以 MIT License 发布。第三方行情数据及接口的使用受原提供方条款约束。</p>
+  </main>
+  <footer><span>A股精力管理系统</span><span>Research prototype · Not investment advice</span></footer>
+</body>
+</html>
