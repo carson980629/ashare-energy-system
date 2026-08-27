@@ -1,0 +1,19 @@
+{
+  "provider": "tencent-fqkline",
+  "endpoint": "https://web.ifzq.gtimg.cn/appstock/app/fqkline/get",
+  "frequency": "week",
+  "adjust": "qfq",
+  "startDate": "2020-01-01",
+  "endDate": "auto",
+  "minimumCommonRows": 24,
+  "timeoutMs": 15000,
+  "output": "data/history-baked.js",
+  "symbols": [
+    { "requestCode": "sh000016", "code": "000016", "name": "上证50" },
+    { "requestCode": "sh000300", "code": "000300", "name": "沪深300" },
+    { "requestCode": "sh000905", "code": "000905", "name": "中证500" },
+    { "requestCode": "sh000852", "code": "000852", "name": "中证1000" },
+    { "requestCode": "sz399006", "code": "399006", "name": "创业板指" },
+    { "requestCode": "sh000688", "code": "000688", "name": "科创50" }
+  ]
+}

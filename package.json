@@ -1,0 +1,16 @@
+{
+  "name": "ashare-energy-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A股市场状态、ETF配置与投资精力管理的纯静态研究原型",
+  "type": "module",
+  "scripts": {
+    "update:data": "node scripts/update-data.mjs",
+    "validate": "node scripts/validate.mjs",
+    "check": "node --check app.js && node --check scripts/update-data.mjs && node --check scripts/validate.mjs && node scripts/validate.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT"
+}

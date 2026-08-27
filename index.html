@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>A股精力管理系统｜看天气、管精力、控仓位</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="global-nav">
+    <div class="global-inner">
+      <a class="gn-brand" href="tianshi.html">A股精力管理系统</a>
+      <div class="gn-switch">
+        <a class="gn-item" href="tianshi.html">☂ 精力作息台</a>
+        <a class="gn-item active" href="index.html">⌁ 策略监测台</a>
+        <a class="gn-item" href="project.html">项目详情</a>
+      </div>
+    </div>
+  </div>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand-block"><div class="brand-mark">能</div><div><strong>A股精力管理系统</strong><span>市场天气与宽基配置</span></div></div>
+      <nav aria-label="工作台导航">
+        <button class="nav-item active" data-target="overview"><span>⌂</span>市场首页</button>
+        <button class="nav-item" data-target="analysis"><span>▤</span>市场分析</button>
+        <button class="nav-item" data-target="guide"><span>?</span>怎么看懂</button>
+        <button class="nav-item" data-target="strategies"><span>⇄</span>策略说明</button>
+        <button class="nav-item" data-target="portfolio"><span>◫</span>我的配置</button>
+        <button class="nav-item" data-target="performance"><span>⌁</span>策略表现</button>
+        <button class="nav-item" data-target="engine"><span>◎</span>模型细节</button>
+        <button class="nav-item" data-target="audit"><span>✓</span>数据说明</button>
+      </nav>
+      <div class="side-foot"><span class="status-dot"></span><div><b id="dataModeLabel">核验快照</b><small id="sideSyncTime">截至 2026-08-27 收盘</small></div></div>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <div><div class="eyebrow">MARKET WEATHER</div><h1>今天的市场，适合怎么投？</h1></div>
+        <div class="top-actions">
+          <button id="themeToggle" class="theme-toggle" title="切换页面主题" aria-label="切换浅色和深色主题"><span class="sun">☀</span><span class="moon">☾</span></button>
+          <button id="syncBtn" class="primary-btn"><span class="sync-icon">↻</span><span>更新数据</span></button>
+        </div>
+      </header>
+
+      <section id="overview" class="view-section active-view">
+        <div class="friendly-hero">
+          <div class="hero-copy">
+            <div class="asof-line"><span class="live-pill"><i></i>收盘诊断</span><span>2026年8月27日</span><span class="source-chip">数据：腾讯行情·前复权周线</span></div>
+            <div class="weather-line"><span class="weather-icon">☁</span><div><span class="plain-label">当前市场体感</span><h2 id="regimeTitle">偏冷，适合以守为主</h2></div></div>
+            <p id="regimeNarrative">市场有一些短线回暖，但多数宽基指数的中期趋势还没有转强。现在更像雨后放晴的早期，不适合因为一天上涨就明显加仓。</p>
+            <div class="hero-actions"><button class="secondary-btn jump-btn" data-jump="guide">为什么这样判断</button><button class="text-btn jump-btn" data-jump="portfolio">查看配置方案 <span>→</span></button></div>
+          </div>
+          <div class="hero-allocation">
+            <div class="allocation-summary"><span>V2最新完成记录的权益仓位</span><strong id="targetEquity">42.5%</strong><small>每100元中投入股市的比例（含风控调整）</small></div>
+            <div class="money-bar"><i id="equityMoneyBar" style="width:42.5%"></i></div>
+            <div class="money-labels"><span><b id="moneyEquity">¥42</b>投向权益</span><span><b id="moneyCash">¥58</b>暂留现金</span></div>
+            <small id="fuseNote" class="fuse-note"></small>
+          </div>
+        </div>
+
+        <div class="answer-strip">
+          <article><span class="answer-no">01</span><div><small>现在是什么行情？</small><b id="answer1Title">部分回暖，部分仍弱</b><p id="answer1Desc">短线因科技方向走强而回暖，但多数宽基的中期趋势还没真正好转。</p></div></article>
+          <article><span class="answer-no">02</span><div><small>该积极还是保守？</small><b id="answer2Title">均衡为主，保留灵活</b><p id="answer2Desc">用一半左右的资金参与，留够现金应对波动，避免一次判断错误伤到本金。</p></div></article>
+          <article><span class="answer-no">03</span><div><small>更适合配什么？</small><b id="answer3Title">大盘 + 中盘均衡</b><p id="answer3Desc">沪深300 + 中证500 是当前组合的核心，成长风格仍需等待趋势修复。</p></div></article>
+        </div>
+
+        <div class="section-heading"><div><span>本周行动卡</span><h2>周五14:45核对信号，按规则完成调仓</h2></div><p>配置比例采用V2最新完成的CSV记录；日期是周标签，不冒充实际成交日。</p></div>
+        <div class="simple-allocation">
+          <article class="asset-card" id="pickCard1"><div class="asset-symbol" id="pickSymbol1"></div><div><span id="pickTag1"></span><h3 id="pickName1"></h3><p id="pickDesc1"></p></div><strong id="pickWeight1"></strong></article>
+          <article class="asset-card" id="pickCard2"><div class="asset-symbol" id="pickSymbol2"></div><div><span id="pickTag2"></span><h3 id="pickName2"></h3><p id="pickDesc2"></p></div><strong id="pickWeight2"></strong></article>
+          <article class="asset-card accent-gray"><div class="asset-symbol">¥</div><div><span>安全垫</span><h3>现金 / 货币工具</h3><p>等待更多指数重回中期上升趋势后再逐步使用。</p></div><strong id="cashWeight">80%</strong></article>
+        </div>
+
+        <div class="insight-grid">
+          <article class="story-card">
+            <div class="story-head"><span class="story-icon">脉</span><div><small>市场脉搏</small><h3>为什么说只是“短线回暖”？</h3></div></div>
+            <div class="pulse-visual">
+              <div class="pulse-item"><div><span>最近1个月</span><b id="shortBreadth">50.0%</b></div><div class="friendly-track"><i id="shortBar" style="width:50%"></i></div><p>6个主要方向中，有3个回到月度平均价格之上，短线不算差。</p></div>
+              <div class="pulse-item warning"><div><span>最近1个季度</span><b id="midBreadth">16.7%</b></div><div class="friendly-track"><i id="midBar" style="width:16.7%"></i></div><p>只有1个方向站上季度平均价格，这是当前最需要警惕的信号。</p></div>
+              <div class="pulse-item"><div><span>最近半年</span><b id="longBreadth">33.3%</b></div><div class="friendly-track"><i id="longBar" style="width:33.3%"></i></div><p>长期结构仍偏弱，趋势改善需要更多宽基一起参与。</p></div>
+            </div>
+          </article>
+          <article class="story-card turning-card">
+            <div class="story-head"><span class="story-icon">看</span><div><small>接下来观察什么</small><h3>什么时候可以更乐观？</h3></div></div>
+            <div class="watch-list">
+              <div><span>1</span><p><b>中期健康度回升</b>至少3只宽基站上季度均价，说明回暖不再只靠少数方向。</p></div>
+              <div><span>2</span><p><b>成长板块跟上</b>中证500、创业板或科创50持续转强，市场赚钱效应更完整。</p></div>
+              <div><span>3</span><p><b>综合温度超过65</b>模型才会从“防守”正式切换到“进攻”。</p></div>
+            </div>
+            <div class="bottom-note"><span>当前温度</span><b><em id="scoreValue">31.7</em> / 100</b><div class="temperature"><i id="scoreBar" style="width:31.7%"></i><mark style="left:65%">转强线</mark></div></div>
+          </article>
+        </div>
+
+        <article class="panel etf-panel">
+          <div class="panel-head"><div><span class="section-index">六大市场切片</span><h3>谁更强，谁还在休息？</h3></div><button class="icon-btn" id="exportSnapshot" title="导出当前快照">⇩</button></div>
+          <div id="friendlyEtfGrid" class="friendly-etf-grid"></div>
+          <details class="pro-details"><summary>查看专业数据表（周收盘与均线）</summary><div class="table-wrap"><table><thead><tr><th>指数 / 对应ETF</th><th>周收盘</th><th>MA4</th><th>MA12</th><th>MA24</th><th>短期</th><th>中期</th><th>长期</th><th>趋势画像</th></tr></thead><tbody id="etfTableBody"></tbody></table></div></details>
+        </article>
+      </section>
+
+      <section id="guide" class="view-section">
+        <div class="section-title"><div><span>PLAIN LANGUAGE GUIDE</span><h2>不用学技术分析，也能看懂这套框架</h2></div><p>把复杂指标翻译成四个日常问题。</p></div>
+        <div class="analogy-hero"><div class="analogy-copy"><span>一个简单类比</span><h3>选个股像选运动员，判断市场像先看天气</h3><p>公司基本面再好，也会受到整体市场环境影响。这套模型不评价公司好坏，只回答：今天是顺风、逆风，还是暴风雨？</p></div><div class="weather-scale"><div class="weather-state sun"><i>☀</i><b>进攻</b><span>多数方向一起变强</span></div><div class="weather-state cloud"><i>◐</i><b>震荡</b><span>好坏方向各一半</span></div><div class="weather-state rain active"><i>☂</i><b>防守</b><span>中期趋势普遍偏弱</span></div><div class="weather-state storm"><i>ϟ</i><b>避险</b><span>系统性下跌风险</span></div></div></div>
+        <div class="explain-grid">
+          <article class="explain-card"><span>01</span><h3>“站上均线”是什么意思？</h3><p>可以把均线理解为一段时间里的平均买入成本。价格高于平均成本，说明这段时间买入的人整体更容易赚钱，市场情绪通常更稳定。</p><div class="mini-demo" role="img" aria-label="周收盘价从MA12均线下方向上穿越，并运行在均线上方的示意图"><svg viewBox="0 0 320 110" preserveAspectRatio="none" aria-hidden="true"><line class="demo-grid" x1="12" y1="88" x2="308" y2="88"></line><path class="demo-ma" d="M14 72 C70 70 110 65 158 62 C210 59 254 56 306 51"></path><path class="demo-price" d="M14 87 C40 82 58 88 78 78 C102 67 119 74 140 66 C161 59 173 63 190 50 C213 34 231 43 250 31 C270 20 286 26 306 18"></path><line class="demo-cross" x1="166" y1="28" x2="166" y2="91"></line><circle class="demo-cross-dot" cx="166" cy="57" r="4"></circle><circle class="demo-price-dot" cx="306" cy="18" r="5"></circle></svg><span class="demo-label demo-label-price">周收盘价</span><span class="demo-label demo-label-ma">MA12 平均成本线</span><span class="demo-label demo-label-cross">向上穿越</span><small>收盘价在均线上方，说明近期走势相对更强</small></div></article>
+          <article class="explain-card"><span>02</span><h3>“市场广度”是什么意思？</h3><p>不是看上证指数一个点位，而是看6个代表不同风格的宽基中，有多少个真正转强。参与上涨的方向越多，行情通常越健康。</p><div class="people-demo"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><small>当前：3/6短线转强，只有1/6中期转强</small></div></article>
+          <article class="explain-card"><span>03</span><h3>为什么要保留现金？</h3><p>现金不是“踏空”，而是选择权。市场没有形成稳定趋势时，保留现金能降低回撤，也让你在信号改善后有资金逐步增加配置。</p><div class="shield-demo"><i>61%</i><span>安全垫</span></div></article>
+          <article class="explain-card"><span>04</span><h3>为什么每周才判断一次？</h3><p>日内消息和情绪变化很快。一般使用者只需周五14:45左右查看预估信号，在收盘附近完成调仓，其余时间无需盯盘。</p><div class="calendar-demo"><b>一</b><b>二</b><b>三</b><b>四</b><b class="active">五</b></div></article>
+        </div>
+        <div class="regime-handbook">
+          <div class="section-heading"><div><span>四种市场状态</span><h2>每个状态下，投资者该关注什么</h2></div></div>
+          <div class="handbook-grid">
+            <article class="handbook bull"><span>阳光</span><h3>多头进攻</h3><p>多数市场方向都在上升，风险偏好较高。</p><b>重点：成长弹性与主线</b><small>不是闭眼追涨，仍需控制单一风格集中度。</small></article>
+            <article class="handbook shock"><span>多云</span><h3>中性震荡</h3><p>市场一部分强、一部分弱，热点轮动快。</p><b>重点：均衡配置</b><small>减少追高，重视估值、业绩和买入价格。</small></article>
+            <article class="handbook bear active"><span>小雨</span><h3>弱势防守</h3><p>短线可能反弹，但中期趋势仍普遍偏弱。</p><b>重点：0%权益，100%现金</b><small>V2不在弱势阶段硬抗，等待综合广度重新进入震荡区。</small></article>
+            <article class="handbook crisis"><span>暴雨</span><h3>极端空头</h3><p>多数宽基全面破位，容易出现系统性下跌。</p><b>重点：保护本金</b><small>停止主观抄底，等待趋势右侧修复。</small></article>
+          </div>
+        </div>
+      </section>
+
+      <section id="strategies" class="view-section">
+        <div class="section-title"><div><span>STRATEGY PLAYBOOK</span><h2>V1 与 V2，到底在做什么？</h2></div><p>先用两分钟看懂差异，再按需要展开完整规则。</p></div>
+        <div class="strategy-intro panel"><div><span>共同底座</span><h3>两套策略都先判断“市场天气”，再决定仓位与标的</h3><p>它们都观察6只核心宽基ETF，用MA4、MA12、MA24计算市场广度，并把市场分成进攻、震荡、防守、危机四种状态。真正的差异发生在第二步：仓位如何分、从哪里选、什么时候换。</p></div><div class="strategy-flow-mini"><span>6只宽基</span><i>→</i><span>市场状态</span><i>→</i><b>仓位 + 标的</b></div></div>
+
+        <div class="strategy-version-grid">
+          <article class="strategy-version v1"><div class="version-head"><span>V1 基础优化</span><b>简单、稳定、容易人工执行</b></div><p class="version-one-line">像“按天气准备固定衣柜”：不同状态对应预先规定的仓位和标的池。</p><div class="version-points"><p><i>1</i><span><b>状态识别</b>沿用三周期市场广度。</span></p><p><i>2</i><span><b>仓位</b>采用连续函数或20%/35%/50%/65%/80%档位，危机时0%。</span></p><p><i>3</i><span><b>选标</b>震荡固定300+500，防守固定50+300，进攻只在成长池选12周动量Top 2。</span></p><p><i>4</i><span><b>调仓</b>标的变化或仓位偏差达到5%才动。</span></p></div><div class="version-result"><span>它解决什么</span><b>少判断、少折腾，用规则控制总仓位</b></div></article>
+          <article class="strategy-version v2"><div class="version-head"><span>V2 进阶增强</span><b>更自适应、更进攻、更重视趋势质量</b></div><p class="version-one-line">像“全队公开选拔”：不预设价值或成长，谁的趋势最强就让谁上场。</p><div class="version-points"><p><i>1</i><span><b>状态识别</b>沿用相同广度底座，方便和V1公平比较。</span></p><p><i>2</i><span><b>仓位</b>进攻75%—100%、震荡40%—60%、防守与危机0%。</span></p><p><i>3</i><span><b>选标</b>六ETF统一计算快慢复合动量，选Top 2；震荡态先过滤掉未站上MA12者。</span></p><p><i>4</i><span><b>风控</b>Top 3迟滞减少乱换，单标的跌破MA4后该仓位降到原来的60%。</span></p></div><div class="version-result"><span>它解决什么</span><b>减少风格偏见，争取在主升浪集中到真正领涨方向</b></div></article>
+        </div>
+
+        <div class="strategy-compare panel"><div class="panel-head"><div><h3>简略版：五个问题看懂V1与V2</h3><small>适合第一次了解策略的人</small></div><span class="badge ok">2分钟</span></div><div class="table-wrap"><table><thead><tr><th>问题</th><th>V1基础优化</th><th>V2进阶增强</th></tr></thead><tbody><tr><td>先判断什么？</td><td>6只宽基的MA4/12/24广度</td><td>相同，市场天气底座不变</td></tr><tr><td>弱市怎么办？</td><td>保留低仓位防守标的；危机才空仓</td><td>防守和危机都0%权益</td></tr><tr><td>从哪里选ETF？</td><td>按状态使用固定池或成长池</td><td>6只ETF统一排名，震荡时加MA12过滤</td></tr><tr><td>怎么决定谁更强？</td><td>主要看近12周涨幅</td><td>4周速度 + 12周主线 + MA12趋势距离</td></tr><tr><td>如何减少错误切换？</td><td>5%仓位缓冲 + 组合-8%回撤熔断</td><td>Top 3迟滞 + 单标的MA4六折平抑</td></tr><tr><td>什么时候执行？</td><td>周五收盘确认，原框架建议下周一执行</td><td>周五14:45预估并在尾盘执行；回测假设同收盘成交</td></tr></tbody></table></div></div>
+
+        <div class="section-heading"><div><span>把术语翻成人话</span><h2>三个最容易卡住的机制</h2></div><p>下面都是教学示意，不是当期信号或收益预测。</p></div>
+        <div class="concept-stack">
+          <details class="concept-card panel" open><summary><div><span>01</span><h3>快慢复合动量</h3><p>不是只追最近涨得最多，而是给“爆发速度、主线持续性、趋势位置”做一次综合体检。</p></div><b>展开图解</b></summary><div class="concept-body"><code class="concept-formula">Score = 0.4 × 4周收益 + 0.6 × 12周收益 + 0.5 × (当前价格 ÷ MA12 - 1)</code><div class="momentum-explainer"><div class="momentum-part fast"><span>短跑成绩</span><b>4周收益 × 40%</b><p>看最近一个月有没有明显加速，负责对风格切换保持敏感。</p></div><i>+</i><div class="momentum-part slow"><span>长跑成绩</span><b>12周收益 × 60%</b><p>看过去一个季度是否持续领先，权重最高，用来锚定主线。</p></div><i>+</i><div class="momentum-part trend"><span>坡度位置</span><b>MA12乖离 × 50%</b><p>看价格比季度平均成本高多少，帮助区分真趋势与一次脉冲。</p></div><i>=</i><div class="momentum-total"><span>复合得分</span><b>用于6只ETF横向排名</b><p>总分高，代表“近期快、中期稳、趋势也强”。</p></div></div><div class="plain-example"><b>通俗例子</b><p>A最近4周突然涨10%，但过去12周仍为负；B最近4周只涨4%，过去12周却稳定涨15%且站稳MA12。单看短期可能选A，复合评分更可能选B，因为B更像持续主线。具体名次仍取决于三项实际数值。</p></div><div class="concept-risk"><b>它不保证什么</b><p>动量不是“涨过就一定继续涨”。急速风格反转时，强势标的也可能快速回撤，所以V2还需要Top 3迟滞和MA4平抑。</p></div></div></details>
+
+          <details class="concept-card panel"><summary><div><span>02</span><h3>Top 3 迟滞换仓</h3><p>不是拖延执行，而是给排名设置一个缓冲带，避免第一名和第三名每周互换就反复交易。</p></div><b>展开图解</b></summary><div class="concept-body"><div class="rank-demo"><div class="rank-week"><span>本周排名</span><p><b>1</b>科创50</p><p class="held"><b>2</b>创业板 <em>持仓</em></p><p><b>3</b>中证1000</p><p><b>4</b>中证500</p></div><div class="rank-arrow">→</div><div class="rank-week"><span>下周排名</span><p><b>1</b>科创50</p><p><b>2</b>中证1000</p><p class="held"><b>3</b>创业板 <em>仍持有</em></p><p><b>4</b>中证500</p></div><div class="rank-decision"><span>系统决定</span><b>不换仓</b><p>原持仓还在Top 3缓冲区内。只有跌到第4名及以后，才被当前第1名替换。</p></div></div><div class="concept-risk"><b>它解决什么</b><p>降低因为微小排名差异造成的来回换仓、交易成本和追涨杀跌。代价是风格真的快速切换时，可能慢一周确认。</p></div></div></details>
+
+          <details class="concept-card panel"><summary><div><span>03</span><h3>单标的 MA4 六折平抑</h3><p>大盘天气仍好，不代表每个持仓都健康；某只ETF掉队时，先削减它自己的风险。</p></div><b>展开图解</b></summary><div class="concept-body"><div class="ma4-demo"><div class="ma4-before"><span>原计划</span><div class="weight-block full"><b>50%</b><small>某ETF基础权重</small></div></div><div class="ma4-trigger"><i>跌破MA4</i><b>× 60%</b></div><div class="ma4-after"><span>平抑后</span><div class="weight-block reduced"><b>30%</b><small>继续持有</small></div><div class="weight-block cash"><b>20%</b><small>转现金</small></div></div></div><div class="plain-example"><b>怎么算</b><p>如果组合总仓位100%，两只ETF原本各50%；其中一只跌破MA4，它的50%基础权重乘60%，变成30%，释放出的20%转为现金。另一只是否调整，要看它自己的MA4状态。</p></div><div class="concept-risk"><b>它不是止损承诺</b><p>这是降低风险暴露，不保证能避开跳空或快速下跌；而且价格重新站回MA4后的恢复规则必须按策略实现保持一致。</p></div></div></details>
+        </div>
+
+        <div class="section-heading"><div><span>详细版本</span><h2>完整决策链：从市场天气到周五执行</h2></div><p>适合希望核查规则、复现策略的人。</p></div>
+        <div class="strategy-deep-grid">
+          <article class="panel deep-step"><span>STEP 1</span><h3>市场状态层</h3><p>计算6只ETF站上MA4、MA12、MA24的比例，再按35% / 45% / 20%加权为综合广度。</p><code>B = 0.35×B4 + 0.45×B12 + 0.20×B24</code><small>V1与V2共用，目的是先回答“现在适不适合承担风险”。</small></article>
+          <article class="panel deep-step"><span>STEP 2</span><h3>总仓位层</h3><p>V1用20%+60%×B的平滑函数或离散档位；V2改成进攻75%—100%、震荡40%—60%、防守/危机0%。</p><small>V2更两极化：好天气更敢进攻，坏天气更彻底离场。</small></article>
+          <article class="panel deep-step"><span>STEP 3</span><h3>标的选择层</h3><p>V1按状态进入预设标的池；V2让6只ETF统一比赛。震荡态必须先站上MA12，才有资格参与Top 2。</p><small>这一步决定“买谁”，但优先级低于市场状态与总仓位。</small></article>
+          <article class="panel deep-step"><span>STEP 4</span><h3>换仓与平抑层</h3><p>V1用5%仓位缓冲减少交易；V2增加Top 3迟滞，并对跌破MA4的单标的把基础权重乘60%。</p><small>目标是减少无效交易，同时控制牛市鱼尾阶段的单标的回撤。</small></article>
+          <article class="panel deep-step"><span>STEP 5</span><h3>周五执行层</h3><p>一般使用者周五14:45开始核对预估信号；回测则使用最终周收盘信号并假设同收盘价成交。</p><small>两种口径不完全等价，实盘还会受到滑点、订单类型和成交量约束。</small></article>
+          <article class="panel deep-step caution"><span>验证边界</span><h3>不要只看全样本净值</h3><p>应继续做下周一执行对照、交易成本压力测试、参数敏感性与样本外验证。</p><small>当前页面展示的是用户V2 CSV历史结果，不是实盘业绩或未来承诺。</small></article>
+        </div>
+        <div class="source-note panel"><b>规则来源与口径</b><p>V1说明依据《A股市场状态识别与择时配置实操指南》；V2说明依据《A股6核心ETF宏观自适应与快慢复合动量择时框架》。绩效曲线与主指标仍以用户提供的V2逐周CSV为准。</p><div class="source-links"><a href="./docs/v1-regime-identification-guide.md" target="_blank">查看V1原始框架</a><a href="./docs/v2-comprehensive-framework.md" target="_blank">查看V2完整说明书</a><a href="./docs/v2-enhanced-report.md" target="_blank">查看V2归因报告</a></div></div>
+      </section>
+
+      <section id="portfolio" class="view-section">
+        <div class="section-title"><div><span>MY ALLOCATION</span><h2>我的配置方案</h2></div><p>先管住总体风险，再考虑单只ETF。</p></div>
+        <div class="portfolio-plain-grid">
+          <article class="panel allocation-panel"><div class="panel-head"><div><span class="section-index">V2最新记录</span><h3>每100元如何安排</h3></div><span id="rebalanceBadge" class="badge warn">需对照现仓</span></div><div class="allocation-body"><div class="donut" id="allocationDonut"><div><b id="donutEquity">0%</b><span>投入股市</span></div></div><div class="allocation-list" id="allocationList"></div></div><div class="plain-tip">页面采用V2 CSV最后一条完成记录；下一次是否调整，以周五预估信号和最终执行条件为准。</div></article>
+          <article class="panel"><div class="panel-head"><h3>这份建议适合谁？</h3><span class="badge ok">使用前阅读</span></div><div class="fit-list"><p><i>✓</i><span><b>适合</b>希望用宽基ETF控制整体仓位、投资期限较长、接受规则化配置的人。</span></p><p><i>!</i><span><b>需要调整</b>如果你已有个股或主动基金，应把它们一并计入权益总仓位，不能把本页比例当成额外加仓额度。</span></p><p><i>×</i><span><b>不等于</b>收益承诺、个股推荐或必须执行的交易指令。</span></p></div><div id="tradeTicket" class="trade-ticket"></div></article>
+        </div>
+        <details class="advanced-settings panel"><summary>查看V2已锁定的执行参数</summary><div class="control-list"><div><span>弱势/危机仓位</span><b>0%权益</b></div><div><span>震荡仓位</span><b>40%—60%</b></div><div><span>多头仓位</span><b>75%—100%</b></div><div><span>动量评分</span><b>4周 + 12周 + MA12乖离</b></div><div><span>换仓迟滞</span><b>持仓仍在Top 3则不换</b></div><div><span>单标的平抑</span><b>跌破MA4后权重×60%</b></div></div></details>
+        <article class="panel trade-log"><div class="panel-head"><h3>V2回测周度记录</h3><span class="asof">最近12条 · CSV日期为周标签</span></div><div class="table-wrap"><table><thead><tr><th>周标签</th><th>记录类型</th><th>状态</th><th>市场温度</th><th>执行仓位</th><th>持仓配置明细</th><th>换手</th><th>口径</th></tr></thead><tbody id="tradeLogBody"><tr><td colspan="8" class="empty">等待用户回测数据</td></tr></tbody></table></div></article>
+      </section>
+
+      <section id="performance" class="view-section">
+        <div class="section-title"><div><span>STRATEGY PERFORMANCE</span><h2>这套策略过去表现如何？</h2></div><p id="performancePeriod">尚未载入历史数据，不展示模拟收益。</p></div>
+        <div class="performance-note"><span>先看懂</span><p>净值曲线回答“1元钱后来变成多少”，最大回撤回答“过程中最难受时亏了多少”。两者要放在一起看，不能只看收益。<button class="inline-link jump-btn" data-jump="strategies">查看V1 / V2逻辑区别 →</button></p></div>
+        <div id="perfBenchmarkSummary" class="performance-note"><span>对照结果</span><p>等待用户回测数据。</p></div>
+        <div class="perf-kpis"><div><span>累计赚了多少</span><b id="totalReturn">—</b><small>策略期末净值相对起点</small></div><div><span>折算每年收益</span><b id="annualReturn">—</b><small>按实际日期几何年化</small></div><div><span>最深一次回撤</span><b id="maxDrawdown">—</b><small>由用户净值序列重算</small></div><div><span>收益波动大小</span><b id="annualVol">—</b><small>周收益波动 × √52</small></div><div><span>风险收益效率</span><b id="sharpe">—</b><small>无风险利率按0%计算</small></div><div><span>收益回撤效率</span><b id="turnover">—</b><small>卡玛比率：年化收益 / 最大回撤</small></div></div>
+        <article class="panel chart-panel"><div class="panel-head"><div><h3>V2增强策略、V1与市场基准</h3><small>逐周数据直接来自V2增强版CSV</small></div><div class="legend"><span><i class="strategy"></i>V2增强</span><span><i style="background:var(--blue)"></i>V1基础</span><span><i style="background:var(--amber)"></i>六ETF等权</span><span><i class="benchmark"></i>沪深300</span></div></div><canvas id="navChart" height="330"></canvas><div id="navEmpty" class="chart-empty">等待V2回测数据</div></article>
+        <details class="panel panorama-panel"><summary>查看V2全景走势图（净值 / 仓位 / 市场温度）</summary><a href="./assets/screenshots/v2-enhanced-panorama.png" target="_blank" rel="noopener"><img src="./assets/screenshots/v2-enhanced-panorama.png" alt="V2增强策略全景走势图"></a><p>图源：用户提供V2增强版可视化，区间2023-01至2026-08。点击图片可查看原始分辨率。</p><div class="source-links"><a href="./docs/v2-comprehensive-framework.md" target="_blank">完整框架说明书</a><a href="./docs/v2-enhanced-report.md" target="_blank">进阶归因报告</a><a href="./data/v2-enhanced-weekly-data.csv" download>下载187周CSV</a></div></details>
+        <div class="dashboard-grid"><article class="panel chart-panel"><div class="panel-head"><div><h3>历史回撤</h3><small>从阶段高点跌下来的幅度</small></div><span class="risk-label">警戒线 -8%</span></div><canvas id="drawdownChart" height="250"></canvas><div id="ddEmpty" class="chart-empty small">等待历史净值</div></article><article class="panel"><div class="panel-head"><div><h3>市场状态分布</h3><small>用户回测中有多少周处于不同天气</small></div><span class="asof">按评估周</span></div><div id="regimeStats" class="regime-stats"><div class="empty">等待历史回测</div></div></article></div>
+        <div class="section-heading"><div><span>V2增强逻辑</span><h2>收益提升来自哪里？</h2></div><p>规则以完整框架说明书为准；绩效数字以CSV逐周净值复算为准。</p></div>
+        <div class="analysis-grid v2-logic-grid">
+          <article class="panel analysis-card"><h3>1. 六ETF全域选拔</h3><p>不再预设价值池或成长池，六只核心ETF统一参与排名，使系统能在红利行情与科技行情之间自适应切换。</p></article>
+          <article class="panel analysis-card"><h3>2. 快慢复合动量</h3><p><code>Score = 0.4×Ret4w + 0.6×Ret12w + 0.5×(Price/MA12-1)</code>，兼顾短期敏锐度与中期主线稳定性。</p></article>
+          <article class="panel analysis-card"><h3>3. Top 3迟滞与强多头满仓</h3><p>现有持仓仍位列前三时不换仓；综合广度进入多头区后，目标权益按75%—100%映射，降低无效换手并增强主升浪弹性。</p></article>
+          <article class="panel analysis-card"><h3>4. 单标的MA4平抑</h3><p>即使市场仍为多头，持仓标的自身跌破4周线时，该标的权重压缩至原目标的60%，其余转为现金。</p></article>
+        </div>
+        <article class="panel attribution-panel"><div class="panel-head"><div><h3>CSV复算的分年度表现</h3><small>报告年度表与逐周CSV存在差异，以下以CSV为准</small></div><span class="badge warn">口径纠偏</span></div><div class="table-wrap"><table><thead><tr><th>年度</th><th>V2增强</th><th>V1基础</th><th>六ETF等权</th><th>沪深300</th><th>主要观察</th></tr></thead><tbody><tr><td>2023</td><td class="negative">-3.6%</td><td class="negative">-2.4%</td><td class="negative">-13.0%</td><td class="negative">-13.0%</td><td>空仓机制显著降低弱市损失</td></tr><tr><td>2024</td><td class="positive">+5.0%</td><td class="positive">+7.7%</td><td class="positive">+8.1%</td><td class="positive">+13.4%</td><td>防守有效，但未完全吃满红利行情</td></tr><tr><td>2025</td><td class="positive">+31.6%</td><td class="positive">+17.1%</td><td class="positive">+38.4%</td><td class="positive">+26.6%</td><td>V2显著优于V1，但仍落后等权强牛基准</td></tr><tr><td>2026至8月</td><td class="positive">+10.7%</td><td class="positive">+1.4%</td><td class="positive">+7.4%</td><td class="positive">+0.7%</td><td>V2在分化期取得相对超额</td></tr></tbody></table></div></article>
+        <div class="execution-card panel"><div><span>每周执行节奏</span><h3>周五14:45查看预估信号 → 收盘阶段完成调仓</h3></div><p><b>回测假设：</b>使用周五最终收盘信号，并默认按同一收盘价成交；这是理想化口径，可能低估滑点并含同收盘成交偏差。<b>一般使用者：</b>14:45开始核对预估信号；若盘中执行，应在14:56前按券商支持的订单类型完成。2026-07-06起ETF在14:57—15:00进入收盘集合竞价，最后三分钟仅接受限价申报且不可撤单；也可在15:00确认信号后，尝试15:05—15:30盘后固定价格交易，但成交取决于对手盘。</p><span class="src">交易规则来源：<a href="https://www.sse.com.cn/aboutus/mediacenter/hotandd/c/c_20260424_10816474.shtml" target="_blank" rel="noopener">上海证券交易所，2026-04-24</a></span></div>
+      </section>
+
+      <section id="analysis" class="view-section">
+        <div class="section-title"><div><span>MARKET ANALYSIS</span><h2>市场分析</h2></div><p>基于公开信源 · 2026-08-27 收盘</p></div>
+
+        <div class="panel index-strip">
+          <div class="index-chip rise"><span>上证指数</span><b>3,956.57</b><em>+1.13%</em></div>
+          <div class="index-chip rise"><span>深证成指</span><b>14,048.88</b><em>+1.50%</em></div>
+          <div class="index-chip rise"><span>创业板指</span><b>3,473.35</b><em>+1.71%</em></div>
+          <div class="index-chip rise"><span>科创50</span><b>1,693.48</b><em>+3.77%</em></div>
+          <div class="index-chip rise"><span>沪深300</span><b>4,630.28</b><em>+0.86%</em></div>
+          <div class="index-chip rise"><span>中证500</span><b>7,946.33</b><em>+2.26%</em></div>
+          <div class="index-chip rise"><span>中证1000</span><b>7,732.95</b><em>+2.50%</em></div>
+          <div class="index-chip muted"><span>两市成交</span><b>1.81万亿</b><em>缩量</em></div>
+        </div>
+
+        <div class="analysis-grid">
+          <article class="panel analysis-card">
+            <h3>今日主线：AI 算力 / 光通信</h3>
+            <p>英伟达第二财季营收同比 +106%、指引远超预期，重燃 AI 投资周期信心。A股光通信、光模块、存储芯片、算力硬件集体拉升，科创50 +3.77% 领涨。</p>
+            <span class="src">来源：华尔街见闻 · 2026-08-27 · <a href="https://wallstreetcn.com/articles/3780403" target="_blank" rel="noopener">原文</a> · 非一手来源，需核实原文</span>
+          </article>
+          <article class="panel analysis-card">
+            <h3>风格结构：成长反弹、权重分化</h3>
+            <p>中证500 +2.26%、中证1000 +2.50%、创业板指 +1.71%，明显强于沪深300 +0.86%。中小盘与科技成长领跑，呈“普涨 + 科技主线”格局。</p>
+            <span class="src">来源：沪深交易所行情 · 2026-08-27 收盘</span>
+          </article>
+          <article class="panel analysis-card">
+            <h3>需要留意的风险</h3>
+            <p>两市成交 1.81 万亿元、仍处缩量区间；美国 7 月核心 PCE 同比 3.3% 高于目标，美债收益率上行，市场已充分定价 12 月加息，外部流动性仍有扰动。</p>
+            <span class="src">来源：华尔街见闻早餐 · 2026-08-27 · <a href="https://wallstreetcn.com/articles/3780385" target="_blank" rel="noopener">原文</a> · 非一手来源，需核实原文</span>
+          </article>
+          <article class="panel analysis-card">
+            <h3>模型怎么看</h3>
+            <p>短期广度回升至 4/6，但中期广度仍仅 1/6，综合温度 <b id="analysisComp">37.5</b>，处于「<b id="analysisRegime">中性震荡</b>」。反弹主要由科技方向带动，尚未形成全面趋势，建议均衡配置、控制追高。</p>
+            <span class="src">来源：A股精力管理系统 V2模型 · 2026-08-27 收盘</span>
+          </article>
+        </div>
+      </section>
+
+      <section id="engine" class="view-section">
+        <div class="section-title"><div><span>MODEL ENGINE</span><h2>给进阶用户的模型细节</h2></div><p>这一页保留完整计算链路与参数。</p></div>
+        <div class="logic-flow"><div class="logic-node"><b>01</b><span>观察6只核心宽基ETF</span><small>覆盖大盘、中盘、小盘与成长</small></div><i>→</i><div class="logic-node"><b>02</b><span>比较三段周均线</span><small>MA4 / MA12 / MA24</small></div><i>→</i><div class="logic-node"><b>03</b><span>计算综合广度</span><small>短35% / 中45% / 长20%</small></div><i>→</i><div class="logic-node"><b>04</b><span>复合动量全池排名</span><small>4周 + 12周 + MA12乖离</small></div><i>→</i><div class="logic-node active"><b>05</b><span>输出仓位和Top 2</span><small>Top3迟滞 + MA4六折平抑</small></div></div>
+        <div class="engine-grid"><article class="panel formula-panel"><div class="panel-head"><h3>当前计算</h3><span class="badge ok">规则已锁定</span></div><div class="formula">市场温度 = 35% × 短期健康度 + 45% × 中期健康度 + 20% × 长期健康度</div><div class="formula-result"><span>=</span><strong id="engineComp">31.7</strong><em id="engineRegime">弱势防守</em></div><div class="guard-list"><p><span>弱势/危机空仓门控</span><b class="pass">已纳入</b></p><p><span>Top 3迟滞滤波</span><b class="pass">规则已锁定</b></p><p><span>V2最新完成仓位</span><b id="drawdownGuard">等待数据</b></p></div></article><article class="panel"><div class="panel-head"><h3>V2仓位政策</h3><span class="badge ok">完整框架</span></div><div class="policy-explain"><p><b>多头进攻</b><span>综合广度≥65%，目标权益在75%—100%之间映射，Top 2各占一半基础权重。</span></p><p><b>中性震荡</b><span>综合广度35%—65%，目标权益在40%—60%之间映射，只从站上MA12的标的中选Top 2。</span></p><p><b>弱势/危机</b><span>目标权益统一为0%，100%现金、货基或国债逆回购。</span></p><div class="policy-current">当前采用：<strong id="policyHint">V2分段仓位映射</strong></div></div></article></div>
+      </section>
+
+      <section id="audit" class="view-section">
+        <div class="section-title"><div><span>DATA & ASSUMPTIONS</span><h2>数据来源与使用边界</h2></div><p>知道数字从哪里来，也知道它不能说明什么。</p></div>
+        <div class="audit-grid">
+          <article class="panel"><div class="panel-head"><h3>数据源状态</h3><span id="auditDataBadge" class="badge warn">快照模式</span></div><div class="source-list"><p><span>当前市场诊断</span><b>腾讯行情·六宽基周线 · 2026-08-27</b></p><p><span>策略历史表现</span><b id="historySource">用户提供周度回测 CSV</b></p><p><span>执行时区</span><b>Asia/Shanghai (UTC+8)</b></p><p><span>回测截止</span><b>2026-08-24</b></p><p><span>口径边界</span><b>页面不重算用户净值，只按净值序列复算展示指标</b></p><p><span>夏普差异</span><b>CSV复算0.74；报告0.73，属方法/取整差异</b></p></div></article>
+          <article class="panel"><div class="panel-head"><h3>模型假设</h3><span class="badge ok">可复现</span></div><div class="source-list"><p><span>策略版本</span><b>V2 进阶增强版</b></p><p><span>判断频率</span><b>每周收盘</b></p><p><span>用户执行流程</span><b>周五14:45核对；14:56前执行或盘后固定价</b></p><p><span>回测成交口径</span><b>最终周收盘信号 + 同收盘价（理想化、有偏差）</b></p><p><span>动量窗口</span><b>4周 + 12周复合</b></p><p><span>运行位置</span><b>本地浏览器</b></p></div></article>
+        </div>
+        <article class="panel import-panel"><div><h3>导入自己的行情数据</h3><p>CSV字段：date, code, close。至少覆盖6只指数及24个共同交易周。</p></div><label class="upload-btn">选择 CSV<input id="csvInput" type="file" accept=".csv,text/csv"></label></article>
+        <article class="panel caveat-panel"><h3>使用这套模型前，必须知道的四件事</h3><div class="caveat-grid"><p><b>它不评价公司基本面</b><span>模型只判断整体市场环境，个股仍需研究商业模式、估值与业绩。</span></p><p><b>回测不是实盘业绩</b><span>策略表现直接采用用户V2 CSV净值；交易成本、滑点等假设以该CSV生成过程为准。</span></p><p><b>成交口径偏乐观</b><span>最终周收盘信号并按同一收盘价成交存在偏差；实盘14:45只是预估，且ETF收盘集合竞价阶段的订单类型受交易规则约束。</span></p><p><b>当前与历史分开</b><span>当前市场诊断截至2026-08-27；用户回测截止2026-08-24，两者不能混为同一时点。</span></p></div></article>
+      </section>
+
+      <footer><span>A股精力管理系统 · 把精力留给值得关注的行情</span><span>仅供策略研究与产品原型验证，不构成投资建议</span></footer>
+    </main>
+  </div>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="./data/history-baked.js"></script>
+  <script src="./data/user-backtest-data.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

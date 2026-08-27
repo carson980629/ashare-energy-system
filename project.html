@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <meta name="description" content="A股精力管理系统：用六宽基趋势广度判断市场天气，把仓位纪律和盯盘精力放在同一套规则里。">
+  <title>A股精力管理系统｜开源项目详情</title>
+  <link rel="stylesheet" href="./project.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="./project.html"><span>能</span><b>A股精力管理系统</b></a>
+    <nav aria-label="项目导航">
+      <a href="./tianshi.html">精力作息台</a>
+      <a href="./index.html">策略监测台</a>
+      <a href="./README.md">README</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">OPEN-SOURCE A-SHARE REGIME TOOLKIT</p>
+        <h1>先判断市场天气，再决定投入多少资金与精力</h1>
+        <p class="lead">一个无框架、无后端、可离线运行的 A 股宽基状态识别原型。它把六宽基趋势广度、V1/V2 ETF 配置规则、回测审计和投资作息管理放进同一套界面。</p>
+        <div class="actions">
+          <a class="primary" href="./tianshi.html">打开精力作息台</a>
+          <a href="./index.html?view=strategies">查看策略规则</a>
+        </div>
+        <div class="facts"><span>纯 HTML / CSS / JS</span><span>零运行时依赖</span><span>浅色 / 深色</span><span>桌面 / 移动端</span></div>
+      </div>
+      <figure class="hero-shot"><img src="./assets/screenshots/energy-console.png" alt="A股精力管理系统精力作息台界面"><figcaption>默认入口：把市场状态翻译成时间预算、作息和行动边界</figcaption></figure>
+    </section>
+
+    <section class="band problem">
+      <div><p class="eyebrow">WHY IT EXISTS</p><h2>多数投资工具只告诉你“看什么”，很少告诉你“什么时候别看”</h2></div>
+      <div class="problem-grid">
+        <article><b>市场状态</b><p>六只宽基分别观察 MA4、MA12、MA24，以市场广度而非单一指数点位识别风险环境。</p></article>
+        <article><b>资金预算</b><p>先由市场状态决定总权益仓位，再做 ETF 选择，避免“看好某个方向”绕过组合风控。</p></article>
+        <article><b>精力预算</b><p>把多头、震荡、防守、危机映射为不同的研究时间和盯盘频率，降低低胜率阶段的内耗。</p></article>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="section-heading"><p class="eyebrow">TWO WORKSPACES</p><h2>普通投资者入口与可审计策略台分层</h2></div>
+      <div class="showcase">
+        <figure><img src="./assets/screenshots/strategy-overview.png" alt="策略监测台市场首页"><figcaption><b>市场首页</b><span>状态、仓位、行动卡和六大市场切片</span></figcaption></figure>
+        <figure><img src="./assets/screenshots/strategy-guide.png" alt="V1与V2策略说明页"><figcaption><b>策略说明</b><span>公式、示意图、差异对照与验证边界</span></figcaption></figure>
+      </div>
+    </section>
+
+    <section class="band model">
+      <div class="section-heading"><p class="eyebrow">DECISION CHAIN</p><h2>从六宽基到仓位建议，只走五步</h2></div>
+      <ol class="flow">
+        <li><span>01</span><b>观察六宽基</b><p>上证50、沪深300、中证500、中证1000、创业板指、科创50</p></li>
+        <li><span>02</span><b>计算三周期广度</b><p>MA4 / MA12 / MA24 对应短、中、长期趋势健康度</p></li>
+        <li><span>03</span><b>识别市场状态</b><p>多头、震荡、防守、危机四档天气</p></li>
+        <li><span>04</span><b>决定总仓位</b><p>V2：75%—100% / 40%—60% / 0% / 0%</p></li>
+        <li><span>05</span><b>选择与平抑</b><p>复合动量 Top 2、Top 3 迟滞、单标的 MA4 六折平抑</p></li>
+      </ol>
+    </section>
+
+    <section class="content-section split">
+      <div>
+        <p class="eyebrow">V1 VS V2</p>
+        <h2>共同底座，不同的风险表达</h2>
+        <p>V1 更简单，按状态使用固定标的池或成长池；V2 让六只 ETF 全域排名，弱势和危机均保持 0% 权益，并增加迟滞与单标的趋势平抑。</p>
+        <table><thead><tr><th>机制</th><th>V1</th><th>V2</th></tr></thead><tbody><tr><td>选标范围</td><td>状态对应预设池</td><td>六ETF统一排名</td></tr><tr><td>弱势仓位</td><td>保留低仓位</td><td>0%权益</td></tr><tr><td>换仓过滤</td><td>5%仓位缓冲</td><td>Top 3迟滞</td></tr><tr><td>单标的风控</td><td>组合熔断为主</td><td>跌破MA4权重×60%</td></tr></tbody></table>
+      </div>
+      <figure class="performance"><img src="./assets/screenshots/performance.png" alt="V2策略表现与回撤界面"><figcaption>页面绩效按用户提供的 187 周 CSV 净值序列复算，不宣称为实盘业绩</figcaption></figure>
+    </section>
+
+    <section class="band metrics">
+      <div><p class="eyebrow">REFERENCE BACKTEST</p><h2>V2 样例回测口径</h2><p>2023-01-02 至 2026-08-24，共 187 周。数字来自仓库内样例 CSV；回测使用最终周收盘信号并假设同收盘价成交，具有理想化偏差。</p></div>
+      <div class="metric-grid"><article><span>累计收益</span><b>+47.4%</b></article><article><span>几何年化</span><b>+11.2%</b></article><article><span>最大回撤</span><b>-10.8%</b></article><article><span>年化波动</span><b>16.6%</b></article><article><span>夏普</span><b>0.74</b></article><article><span>卡玛</span><b>1.04</b></article></div>
+    </section>
+
+    <section class="content-section data-section">
+      <div><p class="eyebrow">REPRODUCIBLE DATA</p><h2>数据更新不依赖前端跨域请求</h2><p>维护脚本在本地读取配置，拉取周线、校验共同日期与数据质量，再生成浏览器可直接加载的 <code>data/history-baked.js</code>。默认适配腾讯公开行情接口，也可按同一数据契约替换供应商。</p></div>
+      <pre><code>copy config/data-source.example.json config/data-source.json
+node scripts/update-data.mjs
+node scripts/validate.mjs
+
+# 然后直接打开 tianshi.html 或 index.html</code></pre>
+    </section>
+
+    <section class="risk">
+      <p class="eyebrow">BOUNDARIES</p><h2>这是研究工具，不是收益承诺</h2>
+      <div><p>公开行情接口没有官方可用性承诺，可能限流、改字段或停止服务。</p><p>样例回测未在本仓库内从原始逐笔成交完整复现，不能替代独立审计。</p><p>同收盘信号与同收盘成交存在实现偏差，实盘还受到滑点、费用和成交约束。</p><p>任何策略都可能失效。使用者必须结合自身风险承受能力独立决策。</p></div>
+    </section>
+  </main>
+
+  <footer><span>A股精力管理系统</span><span>Research prototype · Not investment advice</span></footer>
+</body>
+</html>
