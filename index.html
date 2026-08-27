@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <title>A股精力管理系统｜看天气、管精力、控仓位</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23b94743'/%3E%3Cpath d='M16 42L27 31l8 7 13-16' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
@@ -31,7 +32,7 @@
         <button class="nav-item" data-target="engine"><span>◎</span>模型细节</button>
         <button class="nav-item" data-target="audit"><span>✓</span>数据说明</button>
       </nav>
-      <div class="side-foot"><span class="status-dot"></span><div><b id="dataModeLabel">核验快照</b><small id="sideSyncTime">截至 2026-08-27 收盘</small></div></div>
+      <div class="side-foot"><span class="status-dot"></span><div><b id="dataModeLabel">核验快照</b><small id="sideSyncTime">等待市场数据</small></div></div>
     </aside>
 
     <main>
@@ -163,6 +164,7 @@
 
       <section id="performance" class="view-section">
         <div class="section-title"><div><span>STRATEGY PERFORMANCE</span><h2>这套策略过去表现如何？</h2></div><p id="performancePeriod">尚未载入历史数据，不展示模拟收益。</p></div>
+        <div class="performance-note static-sample-note"><span>静态回测样例</span><p><b>区间：2023-01-02 至 2026-08-24，共187周。</b> 净值、回撤和年度归因均来自用户提供的V2 CSV，只会按既有净值序列复算展示；运行公开市场数据更新脚本不会延长、重算或刷新这组样例。</p></div>
         <div class="performance-note"><span>先看懂</span><p>净值曲线回答“1元钱后来变成多少”，最大回撤回答“过程中最难受时亏了多少”。两者要放在一起看，不能只看收益。<button class="inline-link jump-btn" data-jump="strategies">查看V1 / V2逻辑区别 →</button></p></div>
         <div id="perfBenchmarkSummary" class="performance-note"><span>对照结果</span><p>等待用户回测数据。</p></div>
         <div class="perf-kpis"><div><span>累计赚了多少</span><b id="totalReturn">—</b><small>策略期末净值相对起点</small></div><div><span>折算每年收益</span><b id="annualReturn">—</b><small>按实际日期几何年化</small></div><div><span>最深一次回撤</span><b id="maxDrawdown">—</b><small>由用户净值序列重算</small></div><div><span>收益波动大小</span><b id="annualVol">—</b><small>周收益波动 × √52</small></div><div><span>风险收益效率</span><b id="sharpe">—</b><small>无风险利率按0%计算</small></div><div><span>收益回撤效率</span><b id="turnover">—</b><small>卡玛比率：年化收益 / 最大回撤</small></div></div>
@@ -176,46 +178,32 @@
           <article class="panel analysis-card"><h3>3. Top 3迟滞与强多头满仓</h3><p>现有持仓仍位列前三时不换仓；综合广度进入多头区后，目标权益按75%—100%映射，降低无效换手并增强主升浪弹性。</p></article>
           <article class="panel analysis-card"><h3>4. 单标的MA4平抑</h3><p>即使市场仍为多头，持仓标的自身跌破4周线时，该标的权重压缩至原目标的60%，其余转为现金。</p></article>
         </div>
-        <article class="panel attribution-panel"><div class="panel-head"><div><h3>CSV复算的分年度表现</h3><small>报告年度表与逐周CSV存在差异，以下以CSV为准</small></div><span class="badge warn">口径纠偏</span></div><div class="table-wrap"><table><thead><tr><th>年度</th><th>V2增强</th><th>V1基础</th><th>6只ETF等权</th><th>沪深300</th><th>主要观察</th></tr></thead><tbody><tr><td>2023</td><td class="negative">-3.6%</td><td class="negative">-2.4%</td><td class="negative">-13.0%</td><td class="negative">-13.0%</td><td>空仓机制显著降低弱市损失</td></tr><tr><td>2024</td><td class="positive">+5.0%</td><td class="positive">+7.7%</td><td class="positive">+8.1%</td><td class="positive">+13.4%</td><td>防守有效，但未完全吃满红利行情</td></tr><tr><td>2025</td><td class="positive">+31.6%</td><td class="positive">+17.1%</td><td class="positive">+38.4%</td><td class="positive">+26.6%</td><td>V2显著优于V1，但仍落后等权强牛基准</td></tr><tr><td>2026至8月</td><td class="positive">+10.7%</td><td class="positive">+1.4%</td><td class="positive">+7.4%</td><td class="positive">+0.7%</td><td>V2在分化期取得相对超额</td></tr></tbody></table></div></article>
+        <article class="panel attribution-panel"><div class="panel-head"><div><h3>静态样例的分年度表现</h3><small>样例截至2026-08-24；年度归因按187周CSV复算，不随公开行情自动更新</small></div><span class="badge warn">固定时点</span></div><div class="table-wrap"><table><thead><tr><th>年度</th><th>V2增强</th><th>V1基础</th><th>6只ETF等权</th><th>沪深300</th><th>主要观察</th></tr></thead><tbody><tr><td>2023</td><td class="negative">-3.6%</td><td class="negative">-2.4%</td><td class="negative">-13.0%</td><td class="negative">-13.0%</td><td>空仓机制显著降低弱市损失</td></tr><tr><td>2024</td><td class="positive">+5.0%</td><td class="positive">+7.7%</td><td class="positive">+8.1%</td><td class="positive">+13.4%</td><td>防守有效，但未完全吃满红利行情</td></tr><tr><td>2025</td><td class="positive">+31.6%</td><td class="positive">+17.1%</td><td class="positive">+38.4%</td><td class="positive">+26.6%</td><td>V2显著优于V1，但仍落后等权强牛基准</td></tr><tr><td>2026至8月</td><td class="positive">+10.7%</td><td class="positive">+1.4%</td><td class="positive">+7.4%</td><td class="positive">+0.7%</td><td>V2在分化期取得相对超额</td></tr></tbody></table></div></article>
         <div class="execution-card panel"><div><span>每周执行节奏</span><h3>周五14:45查看预估信号 → 收盘阶段完成调仓</h3></div><p><b>回测假设：</b>使用周五最终收盘信号，并默认按同一收盘价成交；这是理想化口径，可能低估滑点并含同收盘成交偏差。<b>一般使用者：</b>14:45开始核对预估信号；若盘中执行，应在14:56前按券商支持的订单类型完成。2026-07-06起ETF在14:57—15:00进入收盘集合竞价，最后三分钟仅接受限价申报且不可撤单；也可在15:00确认信号后，尝试15:05—15:30盘后固定价格交易，但成交取决于对手盘。</p><span class="src">交易规则来源：<a href="https://www.sse.com.cn/aboutus/mediacenter/hotandd/c/c_20260424_10816474.shtml" target="_blank" rel="noopener">上海证券交易所，2026-04-24</a></span></div>
       </section>
 
       <section id="analysis" class="view-section">
-        <div class="section-title"><div><span>MARKET ANALYSIS SNAPSHOT</span><h2>市场分析快照</h2></div><p>示例内容 · 2026-08-27 收盘 · 不随数据脚本自动更新</p></div>
+        <div class="section-title"><div><span>MARKET ANALYSIS</span><h2>自动更新的市场分析</h2></div><p id="analysisAsOf">等待市场分析数据</p></div>
 
-        <div class="panel index-strip">
-          <div class="index-chip rise"><span>上证指数</span><b>3,956.57</b><em>+1.13%</em></div>
-          <div class="index-chip rise"><span>深证成指</span><b>14,048.88</b><em>+1.50%</em></div>
-          <div class="index-chip rise"><span>创业板指</span><b>3,473.35</b><em>+1.71%</em></div>
-          <div class="index-chip rise"><span>科创50</span><b>1,693.48</b><em>+3.77%</em></div>
-          <div class="index-chip rise"><span>沪深300</span><b>4,630.28</b><em>+0.86%</em></div>
-          <div class="index-chip rise"><span>中证500</span><b>7,946.33</b><em>+2.26%</em></div>
-          <div class="index-chip rise"><span>中证1000</span><b>7,732.95</b><em>+2.50%</em></div>
-          <div class="index-chip muted"><span>两市成交</span><b>1.81万亿</b><em>缩量</em></div>
-        </div>
+        <div id="analysisIndexStrip" class="panel index-strip"><div class="index-chip muted"><span>指数快照</span><b>等待更新</b><em>运行数据脚本</em></div></div>
+        <p class="analysis-disclosure" id="analysisQuoteSource">指数点位与单日涨跌来自公开行情接口；页面不在浏览器中直连外部源。</p>
 
         <div class="analysis-grid">
-          <article class="panel analysis-card">
-            <h3>今日主线：AI 算力 / 光通信</h3>
-            <p>英伟达第二财季营收同比 +106%、指引远超预期，重燃 AI 投资周期信心。A股光通信、光模块、存储芯片、算力硬件集体拉升，科创50 +3.77% 领涨。</p>
-            <span class="src">来源：华尔街见闻 · 2026-08-27 · <a href="https://wallstreetcn.com/articles/3780403" target="_blank" rel="noopener">原文</a> · 非一手来源，需核实原文</span>
+          <article class="panel analysis-card structure-card">
+            <h3 id="marketStructureTitle">指数结构</h3>
+            <p id="marketStructureText">等待最新指数快照。</p>
+            <span class="src" id="marketStructureSource">来源：等待更新</span>
           </article>
-          <article class="panel analysis-card">
-            <h3>风格结构：成长反弹、权重分化</h3>
-            <p>中证500 +2.26%、中证1000 +2.50%、创业板指 +1.71%，明显强于沪深300 +0.86%。中小盘与科技成长领跑，呈“普涨 + 科技主线”格局。</p>
-            <span class="src">来源：沪深交易所行情 · 2026-08-27 收盘</span>
-          </article>
-          <article class="panel analysis-card">
-            <h3>需要留意的风险</h3>
-            <p>两市成交 1.81 万亿元、仍处缩量区间；美国 7 月核心 PCE 同比 3.3% 高于目标，美债收益率上行，市场已充分定价 12 月加息，外部流动性仍有扰动。</p>
-            <span class="src">来源：华尔街见闻早餐 · 2026-08-27 · <a href="https://wallstreetcn.com/articles/3780385" target="_blank" rel="noopener">原文</a> · 非一手来源，需核实原文</span>
-          </article>
-          <article class="panel analysis-card">
+          <article class="panel analysis-card model-card">
             <h3>模型怎么看</h3>
-            <p>短期广度回升至 4/6，但中期广度仍仅 1/6，综合温度 <b id="analysisComp">37.5</b>，处于「<b id="analysisRegime">中性震荡</b>」。反弹主要由科技方向带动，尚未形成全面趋势，建议均衡配置、控制追高。</p>
-            <span class="src">来源：A股精力管理系统 V2模型 · 2026-08-27 收盘</span>
+            <p id="analysisModelText">等待最新周线数据。</p>
+            <span class="src" id="analysisModelSource">来源：A股精力管理系统模型</span>
           </article>
         </div>
+
+        <div class="section-heading news-heading"><div><span>TRACEABLE NEWS</span><h2>可追溯公开新闻</h2></div><p id="newsUpdateStatus">只展示标题、来源、日期和原文链接，不复制新闻正文</p></div>
+        <div id="newsGrid" class="analysis-grid news-grid"><article class="panel analysis-card"><h3>等待新闻数据</h3><p>运行 <code>node scripts/update-data.mjs</code> 后更新。</p></article></div>
+        <div class="performance-note analysis-boundary"><span>自动更新边界</span><p>脚本自动更新指数事实、公开新闻标题和模型结构描述；不会自动生成新闻观点、预测涨跌或把新闻直接转成交易信号。新闻源失败时沿用上次成功缓存并显示状态。</p></div>
       </section>
 
       <section id="engine" class="view-section">
@@ -227,11 +215,11 @@
       <section id="audit" class="view-section">
         <div class="section-title"><div><span>DATA & ASSUMPTIONS</span><h2>数据来源与使用边界</h2></div><p>知道数字从哪里来，也知道它不能说明什么。</p></div>
         <div class="audit-grid">
-          <article class="panel"><div class="panel-head"><h3>数据源状态</h3><span id="auditDataBadge" class="badge warn">快照模式</span></div><div class="source-list"><p><span>当前市场诊断</span><b>腾讯行情·六宽基周线 · 2026-08-27</b></p><p><span>策略历史表现</span><b id="historySource">用户提供周度回测 CSV</b></p><p><span>执行时区</span><b>Asia/Shanghai (UTC+8)</b></p><p><span>回测截止</span><b>2026-08-24</b></p><p><span>口径边界</span><b>页面不重算用户净值，只按净值序列复算展示指标</b></p><p><span>夏普差异</span><b>CSV复算0.74；报告0.73，属方法/取整差异</b></p></div></article>
+          <article class="panel"><div class="panel-head"><h3>数据源状态</h3><span id="auditDataBadge" class="badge warn">快照模式</span></div><div class="source-list"><p><span>当前市场诊断</span><b>腾讯行情·六宽基周线 · 2026-08-27</b></p><p><span>策略历史表现</span><b id="historySource">用户提供周度回测 CSV</b></p><p><span>执行时区</span><b>Asia/Shanghai (UTC+8)</b></p><p><span>V2样例区间</span><b>2023-01-02 至 2026-08-24 · 187周</b></p><p><span>样例更新边界</span><b>静态回测样例；行情脚本不会延长、重算净值或年度归因</b></p><p><span>夏普差异</span><b>CSV复算0.74；报告0.73，属方法/取整差异</b></p></div></article>
           <article class="panel"><div class="panel-head"><h3>模型假设</h3><span class="badge ok">可复现</span></div><div class="source-list"><p><span>策略版本</span><b>V2 进阶增强版</b></p><p><span>判断频率</span><b>每周收盘</b></p><p><span>用户执行流程</span><b>周五14:45核对；14:56前执行或盘后固定价</b></p><p><span>回测成交口径</span><b>最终周收盘信号 + 同收盘价（理想化、有偏差）</b></p><p><span>动量窗口</span><b>4周 + 12周复合</b></p><p><span>运行位置</span><b>本地浏览器</b></p></div></article>
         </div>
         <article class="panel import-panel"><div><h3>导入自己的行情数据</h3><p>CSV字段：date, code, close。至少覆盖6只指数及24个共同交易周。</p></div><label class="upload-btn">选择 CSV<input id="csvInput" type="file" accept=".csv,text/csv"></label></article>
-        <article class="panel caveat-panel"><h3>使用这套模型前，必须知道的四件事</h3><div class="caveat-grid"><p><b>它不评价公司基本面</b><span>模型只判断整体市场环境，个股仍需研究商业模式、估值与业绩。</span></p><p><b>回测不是实盘业绩</b><span>策略表现直接采用用户V2 CSV净值；交易成本、滑点等假设以该CSV生成过程为准。</span></p><p><b>成交口径偏乐观</b><span>最终周收盘信号并按同一收盘价成交存在偏差；实盘14:45只是预估，且ETF收盘集合竞价阶段的订单类型受交易规则约束。</span></p><p><b>当前与历史分开</b><span>当前市场诊断截至2026-08-27；用户回测截止2026-08-24，两者不能混为同一时点。</span></p></div></article>
+        <article class="panel caveat-panel"><h3>使用这套模型前，必须知道的四件事</h3><div class="caveat-grid"><p><b>它不评价公司基本面</b><span>模型只判断整体市场环境，个股仍需研究商业模式、估值与业绩。</span></p><p><b>回测不是实盘业绩</b><span>策略表现直接采用用户V2 CSV净值；交易成本、滑点等假设以该CSV生成过程为准。</span></p><p><b>成交口径偏乐观</b><span>最终周收盘信号并按同一收盘价成交存在偏差；实盘14:45只是预估，且ETF收盘集合竞价阶段的订单类型受交易规则约束。</span></p><p><b>当前与历史分开</b><span>市场诊断和分析页按数据脚本更新；V2净值与年度归因固定截至2026-08-24，两者不能混为同一时点。</span></p></div></article>
       </section>
 
       <footer><span>A股精力管理系统 · 把精力留给值得关注的行情</span><span>仅供策略研究与产品原型验证，不构成投资建议</span></footer>
@@ -239,6 +227,7 @@
   </div>
   <div id="toast" class="toast" role="status"></div>
   <script src="./data/history-baked.js"></script>
+  <script src="./data/market-analysis.js"></script>
   <script src="./data/user-backtest-data.js"></script>
   <script src="./app.js"></script>
 </body>

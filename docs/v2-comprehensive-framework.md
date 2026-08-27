@@ -102,7 +102,7 @@ $$\text{综合广度得分 } B_{\text{comp}} = 0.35 \times B_{\text{short}} + 0.
 
 ## 五、 全周期真实回测绩效对比 (2023.01 – 2026.08, 共 187 周)
 
-![全周期走势图](/home/user/workspace/topics/2026-08-27-2023-2026-regime-v2-enhanced.png)
+![全周期走势图](../assets/screenshots/v2-enhanced-panorama.png)
 
 ### 1. 全周期宏观指标综合对比
 
@@ -152,11 +152,7 @@ $$\text{综合广度得分 } B_{\text{comp}} = 0.35 \times B_{\text{short}} + 0.
 
 ## 七、 交付成果文件与底层数据清单
 
-1. **可视化全景走势图**：
-   `/home/user/workspace/topics/2026-08-27-2023-2026-regime-v2-enhanced.png`
-2. **全量 187 周底层明细数据表 (CSV)**：
-   `/home/user/workspace/topics/2026-08-27-2023-2026-regime-v2-enhanced-data.csv`
-3. **策略进阶归因与优化报告 (Markdown)**：
-   `/home/user/workspace/topics/2026-08-27-2023-2026-regime-v2-enhanced-report.md`
-4. **本策略完整体系框架说明书 (Markdown)**：
-   `/home/user/workspace/topics/2026-08-27-etf-strategy-v2-comprehensive-framework.md`
+1. **可视化全景走势图**：`../assets/screenshots/v2-enhanced-panorama.png`
+2. **全量187周底层明细数据表（CSV）**：`../data/v2-enhanced-weekly-data.csv`
+3. **策略进阶归因与优化报告（Markdown）**：`./v2-enhanced-report.md`
+4. **本策略完整体系框架说明书（Markdown）**：`./v2-comprehensive-framework.md`

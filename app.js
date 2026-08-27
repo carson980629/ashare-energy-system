@@ -33,6 +33,7 @@ const state = {
   policy: "continuous",
   theme: "light",
   history: null,
+  marketAnalysis: null,
   backtest: null,
   performanceBacktest: null,
   params: { crisisFloor: 0, costBps: 8, bufferPct: 5, stopPct: 8 }
@@ -88,6 +89,43 @@ function regimeOf(b) {
   if (b.comp <= 0.35) return "bear";
   if (b.comp < 0.65) return "shock";
   return "bull";
+}
+
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[char]));
+}
+
+function renderMarketAnalysis() {
+  const data = state.marketAnalysis;
+  const snap = computeSnapshot();
+  const regime = regimeOf(snap.breadth);
+  if (!data || !Array.isArray(data.indices) || !data.indices.length) {
+    if ($("analysisAsOf")) $("analysisAsOf").textContent = "未载入市场分析数据 · 请运行更新脚本";
+    return;
+  }
+  const quoteDate = data.quoteDate || data.indices[0].date;
+  const generated = new Date(data.generatedAt);
+  const generatedText = Number.isNaN(generated.getTime()) ? "生成时间未知" : generated.toLocaleString("zh-CN", { timeZone: "Asia/Shanghai", hour12: false });
+  $("analysisAsOf").textContent = `指数截至 ${quoteDate} 收盘 · 数据生成 ${generatedText}`;
+  $("analysisQuoteSource").textContent = `来源：${data.quoteSource} · 单日涨跌按相邻两个交易日收盘计算 · ${data.indices.length}个指数`;
+  $("analysisIndexStrip").innerHTML = data.indices.map((item) => {
+    const cls = item.changePct > 0 ? "rise" : item.changePct < 0 ? "fall" : "muted";
+    const sign = item.changePct > 0 ? "+" : "";
+    return `<div class="index-chip ${cls}"><span>${escapeHtml(item.name)}</span><b>${Number(item.close).toLocaleString("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b><em>${sign}${fmtPct(item.changePct, 2)}</em></div>`;
+  }).join("");
+  const sorted = [...data.indices].sort((a, b) => b.changePct - a.changePct);
+  const leader = sorted[0];
+  const laggard = sorted.at(-1);
+  const positive = sorted.filter((item) => item.changePct > 0).length;
+  $("marketStructureTitle").textContent = positive === data.indices.length ? "指数结构：全线上涨" : positive === 0 ? "指数结构：普遍回落" : "指数结构：涨跌分化";
+  $("marketStructureText").textContent = `${data.indices.length}个指数中${positive}个上涨。${leader.name}表现最强（${leader.changePct > 0 ? "+" : ""}${fmtPct(leader.changePct, 2)}），${laggard.name}相对最弱（${laggard.changePct > 0 ? "+" : ""}${fmtPct(laggard.changePct, 2)}）。这是收盘事实描述，不等同于板块主线或次日预测。`;
+  $("marketStructureSource").textContent = `来源：${data.quoteSource} · ${quoteDate}收盘`;
+  $("analysisModelText").textContent = `短期广度${Math.round(snap.breadth.short * 6)}/6，中期广度${Math.round(snap.breadth.mid * 6)}/6，长期广度${Math.round(snap.breadth.long * 6)}/6；综合温度${(snap.breadth.comp * 100).toFixed(1)}，状态为“${REGIME[regime].label}”。${narrativeOf(regime, snap.breadth)}`;
+  $("analysisModelSource").textContent = `来源：A股精力管理系统模型 · 周线截至 ${snap.date}`;
+  const news = Array.isArray(data.news) ? data.news : [];
+  $("newsGrid").innerHTML = news.length ? news.map((item) => `<article class="panel analysis-card news-card"><span class="news-type">${escapeHtml(item.sourceType || "公开信息")}</span><h3><a href="${escapeHtml(item.url)}" target="_blank" rel="noopener">${escapeHtml(item.title)}</a></h3><p>点击标题前往原始发布页面核验。本站不复制新闻正文，也不基于标题自动生成交易结论。</p><span class="src">来源：${escapeHtml(item.source)} · ${escapeHtml(item.publishedAt)} · <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener">原文</a></span></article>`).join("") : `<article class="panel analysis-card"><h3>新闻源暂不可用</h3><p>没有可展示的缓存新闻。请检查网络或数据源配置后重新运行更新脚本。</p></article>`;
+  const statusMap = { updated: "本次已更新", cached: "新闻源失败，沿用上次成功缓存", unavailable: "新闻源不可用且无缓存" };
+  $("newsUpdateStatus").textContent = `${statusMap[data.newsStatus] || "新闻状态未知"} · ${news.length}条 · 仅标题、来源、日期与原文链接`;
 }
 
 function targetEquity(breadth) {
@@ -171,8 +209,6 @@ function renderSnapshot() {
   $("policyHint").textContent = "V2分段仓位映射";
   $("engineComp") && ($("engineComp").textContent = (snap.breadth.comp * 100).toFixed(1));
   $("engineRegime") && ($("engineRegime").textContent = info.label.replace("态", ""));
-  $("analysisComp") && ($("analysisComp").textContent = (snap.breadth.comp * 100).toFixed(1));
-  $("analysisRegime") && ($("analysisRegime").textContent = info.label.replace("态", ""));
   $("shortBreadth").textContent = fmtPct(snap.breadth.short);
   $("midBreadth").textContent = fmtPct(snap.breadth.mid);
   $("longBreadth").textContent = fmtPct(snap.breadth.long);
@@ -209,6 +245,7 @@ function renderSnapshot() {
   renderProTable(snap.rows);
   renderTradeTicket(latestV2?.regime || regime, equity, picks);
   renderPerformance();
+  renderMarketAnalysis();
 }
 
 function renderSimpleAllocation(picks, equity) {
@@ -417,7 +454,7 @@ function renderPerformance() {
   $("sharpe").textContent = bt.sharpe.toFixed(2);
   $("turnover").textContent = bt.sourceType === "user-csv" ? bt.calmar.toFixed(2) : fmtPct(bt.annualTurnover, 0);
   $("performancePeriod").textContent = bt.sourceType === "user-csv"
-    ? `${bt.startDate} 至 ${bt.endDate} · V2增强版周度CSV（日期为周标签）· 指标按净值序列重算`
+    ? `静态回测样例 · ${bt.startDate} 至 ${bt.endDate} · 187周 · 不随公开行情自动更新`
     : `${bt.startDate} 至 ${bt.endDate} · 宽基指数原始周线 · 单边成本 ${state.params.costBps}bp`;
   if ($("perfBenchmarkSummary")) {
     if (bt.sourceType === "user-csv") {
@@ -694,6 +731,12 @@ function loadUserBacktest() {
   return true;
 }
 
+function loadMarketAnalysis() {
+  if (!window.MARKET_ANALYSIS || !Array.isArray(window.MARKET_ANALYSIS.indices)) return false;
+  state.marketAnalysis = window.MARKET_ANALYSIS;
+  return true;
+}
+
 function loadBakedHistory() {
   if (!window.BAKED_HISTORY || !window.BAKED_HISTORY.close) return false;
   const H = window.BAKED_HISTORY;
@@ -705,7 +748,7 @@ function loadBakedHistory() {
   state.backtest = runBacktest(state.history);
   loadUserBacktest();
   $("dataModeLabel").textContent = state.performanceBacktest ? "用户回测口径" : "周度回测";
-  $("sideSyncTime").textContent = state.performanceBacktest ? `策略表现截至 ${state.performanceBacktest.endDate}` : `截至 ${H.asof} 周`;
+  $("sideSyncTime").textContent = state.performanceBacktest ? `市场 ${H.asof} · V2样例 ${state.performanceBacktest.endDate}` : `市场截至 ${H.asof} 周`;
   $("historySource").textContent = state.performanceBacktest
     ? `用户提供周度回测 CSV · ${state.performanceBacktest.startDate} 至 ${state.performanceBacktest.endDate}`
     : `腾讯行情·宽基指数原始周线（6只宽基指数）· ${H.start} 至 ${H.asof}`;
@@ -715,6 +758,7 @@ function loadBakedHistory() {
 }
 
 bindEvents();
+loadMarketAnalysis();
 loadBakedHistory();
 renderSnapshot();
 const initialView = new URLSearchParams(location.search).get("view");

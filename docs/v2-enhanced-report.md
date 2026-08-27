@@ -11,10 +11,9 @@ summary: 本报告详尽记录了针对 A股 6 核心 ETF 择时与轮动体系�
 
 ## 一、可视化走势全景图
 
-图表文件已生成并落盘至工作区：
-`/home/user/workspace/topics/2026-08-27-2023-2026-regime-v2-enhanced.png`
+图表文件位于仓库：`../assets/screenshots/v2-enhanced-panorama.png`
 
-![2023–2026 A 股 6 核心 ETF 策略走势与状态底色全景图 (进阶增强版)](/home/user/workspace/topics/2026-08-27-2023-2026-regime-v2-enhanced.png)
+![2023–2026 A股6核心ETF策略走势与状态底色全景图（进阶增强版）](../assets/screenshots/v2-enhanced-panorama.png)
 
 ---
 
@@ -66,6 +65,5 @@ summary: 本报告详尽记录了针对 A股 6 核心 ETF 择时与轮动体系�
 
 ## 五、底层全量数据文件
 
-* **全量逐周底层明细 CSV 文件**：
-  `/home/user/workspace/topics/2026-08-27-2023-2026-regime-v2-enhanced-data.csv`
+* **全量逐周底层明细CSV文件**：`../data/v2-enhanced-weekly-data.csv`
   *(包含 2023-01-02 至 2026-08-24 共 187 周完整的综合广度、站上季线数、市场状态、执行仓位、持仓标的明细与净值数据)*

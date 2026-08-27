@@ -47,6 +47,7 @@
       <div class="showcase">
         <figure><img src="./assets/screenshots/strategy-overview.png" alt="策略监测台市场首页"><figcaption><b>市场首页</b><span>状态、仓位、行动卡和六大市场切片</span></figcaption></figure>
         <figure><img src="./assets/screenshots/strategy-guide.png" alt="V1与V2策略说明页"><figcaption><b>策略说明</b><span>公式、示意图、差异对照与验证边界</span></figcaption></figure>
+        <figure><img src="./assets/screenshots/market-analysis.png" alt="自动更新的市场分析页"><figcaption><b>市场分析</b><span>7个指数快照、可追溯公开新闻与模型结构描述</span></figcaption></figure>
       </div>
     </section>
 
@@ -68,11 +69,11 @@
         <p>V1 更简单，按状态使用固定标的池或成长池；V2 让6只ETF全域排名，弱势和危机均保持 0% 权益，并增加迟滞与单标的趋势平抑。</p>
         <table><thead><tr><th>机制</th><th>V1</th><th>V2</th></tr></thead><tbody><tr><td>选标范围</td><td>状态对应预设池</td><td>6只ETF统一排名</td></tr><tr><td>弱势仓位</td><td>保留低仓位</td><td>0%权益</td></tr><tr><td>换仓过滤</td><td>5%仓位缓冲</td><td>Top 3迟滞</td></tr><tr><td>单标的风控</td><td>组合熔断为主</td><td>跌破MA4权重×60%</td></tr></tbody></table>
       </div>
-      <figure class="performance"><img src="./assets/screenshots/performance.png" alt="V2策略表现与回撤界面"><figcaption>页面绩效按用户提供的 187 周 CSV 净值序列复算，不宣称为实盘业绩</figcaption></figure>
+      <figure class="performance"><img src="./assets/screenshots/performance.png" alt="V2策略表现与回撤界面"><figcaption>页面绩效为截至2026-08-24的187周静态CSV样例，不随公开行情自动更新，也不宣称为实盘业绩</figcaption></figure>
     </section>
 
     <section class="band metrics">
-      <div><p class="eyebrow">REFERENCE BACKTEST</p><h2>V2 样例回测口径</h2><p>2023-01-02 至 2026-08-24，共 187 周。数字来自仓库内样例 CSV；回测使用最终周收盘信号并假设同收盘价成交，具有理想化偏差。</p></div>
+      <div><p class="eyebrow">REFERENCE BACKTEST</p><h2>V2 静态样例回测口径</h2><p>2023-01-02 至 2026-08-24，共187周。净值和年度归因来自仓库内样例CSV，不随公开行情自动更新；回测使用最终周收盘信号并假设同收盘价成交，具有理想化偏差。</p></div>
       <div class="metric-grid"><article><span>累计收益</span><b>+47.4%</b></article><article><span>几何年化</span><b>+11.2%</b></article><article><span>最大回撤</span><b>-10.8%</b></article><article><span>年化波动</span><b>16.6%</b></article><article><span>夏普</span><b>0.74</b></article><article><span>卡玛</span><b>1.04</b></article></div>
     </section>
 

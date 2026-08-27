@@ -7,7 +7,7 @@ import vm from "node:vm";
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const requiredFiles = [
   "project.html", "project.css", "readme.html", "tianshi.html", "index.html", "styles.css", "app.js",
-  "data/history-baked.js", "data/user-backtest-data.js", "data/v2-enhanced-weekly-data.csv",
+  "data/history-baked.js", "data/market-analysis.js", "data/user-backtest-data.js", "data/v2-enhanced-weekly-data.csv",
   "config/data-source.example.json", "README.md", "LICENSE"
 ];
 
@@ -16,9 +16,11 @@ for (const file of requiredFiles) await readFile(resolve(root, file));
 const sandbox = { window: {} };
 vm.createContext(sandbox);
 vm.runInContext(await readFile(resolve(root, "data/history-baked.js"), "utf8"), sandbox);
+vm.runInContext(await readFile(resolve(root, "data/market-analysis.js"), "utf8"), sandbox);
 vm.runInContext(await readFile(resolve(root, "data/user-backtest-data.js"), "utf8"), sandbox);
 
 const history = sandbox.window.BAKED_HISTORY;
+const marketAnalysis = sandbox.window.MARKET_ANALYSIS;
 const backtest = sandbox.window.USER_BACKTEST;
 const expectedCodes = ["000016", "000300", "000905", "000852", "399006", "000688"];
 if (!history || !Array.isArray(history.dates) || history.dates.length < 24) throw new Error("历史周线少于24个共同交易周");
@@ -31,7 +33,12 @@ for (const code of expectedCodes) {
   if (!Array.isArray(rows) || rows.length !== history.dates.length) throw new Error(`${code} 长度与共同日期不一致`);
   if (rows.some((value) => !Number.isFinite(value) || value <= 0)) throw new Error(`${code} 含无效收盘价`);
 }
-if (!backtest || !Array.isArray(backtest.rows) || backtest.rows.length < 2) throw new Error("样例回测数据无效");
+if (!marketAnalysis || !Array.isArray(marketAnalysis.indices) || marketAnalysis.indices.length !== 7) throw new Error("市场分析指数快照必须包含7个指数");
+if (!/^\d{4}-\d{2}-\d{2}$/.test(marketAnalysis.quoteDate || "")) throw new Error("市场分析缺少有效指数日期");
+if (marketAnalysis.indices.some((item) => item.date !== marketAnalysis.quoteDate || !Number.isFinite(item.close) || item.close <= 0 || !Number.isFinite(item.changePct))) throw new Error("市场分析指数日期或数值无效");
+if (!Array.isArray(marketAnalysis.news) || marketAnalysis.news.some((item) => !item.title || !item.source || !/^https:\/\//.test(item.url) || !/^\d{4}-\d{2}-\d{2}/.test(item.publishedAt))) throw new Error("市场分析新闻缺少标题、来源、日期或HTTPS原文链接");
+if (!backtest || !Array.isArray(backtest.rows) || backtest.rows.length !== 187) throw new Error("V2静态样例必须恰好包含187周");
+if (backtest.start !== "2023-01-02" || backtest.asof !== "2026-08-24") throw new Error("V2静态样例区间必须明确为2023-01-02至2026-08-24");
 if (backtest.rows.some((row) => !Number.isFinite(row.nav) || row.nav <= 0)) throw new Error("样例回测净值无效");
 
 const htmlFiles = ["project.html", "readme.html", "tianshi.html", "index.html"];
@@ -46,7 +53,7 @@ for (const file of htmlFiles) {
   }
 }
 
-const screenshotFiles = ["energy-console.png", "strategy-overview.png", "strategy-guide.png", "performance.png"];
+const screenshotFiles = ["energy-console.png", "strategy-overview.png", "strategy-guide.png", "market-analysis.png", "performance.png"];
 const screenshotHashes = new Set();
 for (const file of screenshotFiles) {
   const content = await readFile(resolve(root, "assets/screenshots", file));
@@ -55,4 +62,4 @@ for (const file of screenshotFiles) {
 }
 if (screenshotHashes.size !== screenshotFiles.length) throw new Error("项目截图存在重复文件，可能引用了错误内容");
 
-console.log(`校验通过：${history.count} 个共同周，${backtest.rows.length} 条样例回测记录，${requiredFiles.length} 个核心文件，${screenshotFiles.length} 张独立截图。`);
+console.log(`校验通过：${history.count} 个共同周，${marketAnalysis.indices.length} 个指数快照，${marketAnalysis.news.length} 条可追溯新闻，${backtest.rows.length} 条静态样例回测记录，${requiredFiles.length} 个核心文件，${screenshotFiles.length} 张独立截图。`);

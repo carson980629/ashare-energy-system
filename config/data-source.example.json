@@ -9,6 +9,28 @@
   "minimumCommonRows": 24,
   "timeoutMs": 15000,
   "output": "data/history-baked.js",
+  "marketAnalysis": {
+    "output": "data/market-analysis.js",
+    "quoteFrequency": "day",
+    "quoteRows": 10,
+    "quoteSymbols": [
+      { "requestCode": "sh000001", "code": "000001", "name": "上证指数" },
+      { "requestCode": "sz399001", "code": "399001", "name": "深证成指" },
+      { "requestCode": "sz399006", "code": "399006", "name": "创业板指" },
+      { "requestCode": "sh000688", "code": "000688", "name": "科创50" },
+      { "requestCode": "sh000300", "code": "000300", "name": "沪深300" },
+      { "requestCode": "sh000905", "code": "000905", "name": "中证500" },
+      { "requestCode": "sh000852", "code": "000852", "name": "中证1000" }
+    ],
+    "newsLimit": 4,
+    "newsSources": [
+      {
+        "provider": "govcn-json",
+        "name": "中国政府网",
+        "endpoint": "https://www.gov.cn/lianbo/fabu/TONGYONGLIEBIAODRQ.json"
+      }
+    ]
+  },
   "symbols": [
     { "requestCode": "sh000016", "code": "000016", "name": "上证50" },
     { "requestCode": "sh000300", "code": "000300", "name": "沪深300" },
