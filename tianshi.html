@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
 <title>A股精力管理系统｜市场天气与作息指南</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23b94743'/%3E%3Cpath d='M16 42L27 31l8 7 13-16' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
 :root{
   --bg:#f3f4f0;--card:#ffffff;--card2:#f7f8f4;--line:#e2e5dd;--line2:#cfd5cb;
@@ -230,7 +231,7 @@ footer{text-align:center;font-size:10px;color:var(--muted);padding:20px 0 40px}
       <div class="kv"><span>判定状态</span><b id="kvRegime">弱势防守态（休假减负期）</b></div>
       <div class="kv"><span>V2参考权益仓位</span><b id="kvEquity">0%（100%现金）</b></div>
       <div style="margin-top:14px"><div class="kv" style="border:0;padding-bottom:4px"><span>市场温度计</span><span style="font-family:Georgia,serif">危机&nbsp;&nbsp;防守&nbsp;&nbsp;震荡&nbsp;&nbsp;进攻</span></div><div class="bar"><i id="compBar" style="width:31.7%"></i></div></div>
-      <p class="disclosure" style="margin-top:16px"><b>数据来源</b>：<span id="energyDataSource">等待本地烘焙周线</span>。观察6只核心宽基指数（上证50 / 沪深300 / 中证500 / 中证1000 / 创业板指 / 科创50），综合市场温度 = 35%×短期 + 45%×中期 + 20%×长期。V2规则：多头75%—100%，震荡40%—60%，弱势与危机0%；选标使用全池复合动量、Top3迟滞与单标的MA4六折平抑。一般使用者周五14:45核对预估信号，交易规则与完整执行说明见“策略监测台”。</p>
+      <p class="disclosure" style="margin-top:16px"><b>数据来源</b>：<span id="energyDataSource">等待本地烘焙周线</span>。观察6只核心宽基指数（上证50 / 沪深300 / 中证500 / 中证1000 / 创业板指 / 科创50），综合市场温度 = 35%×短期 + 45%×中期 + 20%×长期。V2规则：多头75%—100%，震荡40%—60%，弱势与危机0%；选标使用全池复合动量、Top3迟滞与单标的MA4六折平抑。数据可按天更新：周中运行更新脚本会得到未收线的滚动周线（盘中状态），周五14:30—14:45可手动更新核对调仓信号，周五15:05后为最终完成周线。一般使用者周五14:45核对预估信号，交易规则与完整执行说明见“策略监测台”。</p>
     </div>
   </details>
 
@@ -303,7 +304,7 @@ function activeSnapshot(){
     return {code,close:values.at(-1),ma20:meanClose(values,4),ma60:meanClose(values,12),ma120:meanClose(values,24)};
   });
   if(rows.some(row=>!row||![row.close,row.ma20,row.ma60,row.ma120].every(Number.isFinite))) return FALLBACK_SNAPSHOT;
-  return {date:h.asof,source:`${h.source} · ${h.adjust}`,rows};
+  return {date:h.asof,source:`${h.source} · ${h.adjust}`,rows,weekState:h.weekState||"completed",asofWeekEnd:h.asofWeekEnd||""};
 }
 const SNAP=activeSnapshot();
 function compute(){
@@ -351,7 +352,7 @@ function render(){
   $("kvComp").textContent = (b.comp*100).toFixed(1) + " / 100";
   $("kvRegime").textContent = REGIME_KEY[regime] + "（" + cfg.mode + "）";
   $("kvEquity").textContent = cfg.pos;
-  $("energyDataSource").textContent = `${SNAP.source}，截至 ${SNAP.date}`;
+  $("energyDataSource").textContent = `${SNAP.source}，截至 ${SNAP.date}${SNAP.weekState === "rolling" ? "，本周周线未收线（滚动状态·盘中信号）" : "，本周周线已收线（完成状态）"}`;
   $("compBar").style.width = fmtPct(b.comp);
   const weeklyBaselineMinutes = 5 * 30;
   const savedH = Math.max(0, (weeklyBaselineMinutes - cfg.minutes) / 60).toFixed(1);

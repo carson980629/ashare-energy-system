@@ -37,7 +37,8 @@
 # 访问 http://localhost:8000/project.html</code></pre>
     <h3>更新市场数据</h3><pre><code>cp config/data-source.example.json config/data-source.json
 node scripts/update-data.mjs
-node scripts/validate.mjs</code></pre><p>更新完成后刷新精力作息台和策略监测台。<code>data/history-baked.js</code> 更新周线状态，<code>data/market-analysis.js</code> 更新7个指数快照、公开新闻标题和模型结构描述。默认剔除未完成周；新闻仅保存标题、日期、来源与原文链接。</p>
+node scripts/validate.mjs</code></pre><p>更新完成后刷新精力作息台和策略监测台。<code>data/history-baked.js</code> 更新周线状态，<code>data/market-analysis.js</code> 更新7个指数快照、公开新闻标题和模型结构描述。新闻仅保存标题、日期、来源与原文链接。</p>
+    <div class="notice"><p><b>可按天更新</b>：周一至周四运行得到的是<b>未收线滚动周线（盘中状态）</b>，周五14:30—14:45可手动更新核对调仓信号，周五15:05后为<b>完成周</b>。仓库内置 Actions 工作流工作日北京时间14:35自动更新，也可手动触发。V2样例净值为静态回测样例，固定截至2026-08-24，不会随行情更新。</p></div>
 
     <h2>样例回测</h2>
     <p>仓库包含 2023-01-02 至 2026-08-24 的 187 周 V2 静态样例 CSV。页面按净值序列复算：累计收益 +47.4%、几何年化 +11.2%、最大回撤 -10.8%、年化波动 16.6%、夏普 0.74、卡玛 1.04。</p>

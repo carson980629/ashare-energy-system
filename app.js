@@ -78,10 +78,22 @@ function computeSnapshot() {
       long: rows.filter((x) => x.long).length / rows.length
     };
     breadth.comp = 0.35 * breadth.short + 0.45 * breadth.mid + 0.20 * breadth.long;
-    return { rows, breadth, date: state.history.dates[idx], source: "腾讯行情·宽基指数原始周线" };
+    return {
+      rows,
+      breadth,
+      date: state.history.dates[idx],
+      weekState: state.history.weekState || "completed",
+      asofWeekEnd: state.history.asofWeekEnd || "",
+      source: "腾讯行情·宽基指数原始周线"
+    };
   }
   const s = snapshotSignals();
-  return { ...s, date: VERIFIED_SNAPSHOT.date, source: VERIFIED_SNAPSHOT.source };
+  return { ...s, date: VERIFIED_SNAPSHOT.date, source: VERIFIED_SNAPSHOT.source, weekState: "completed", asofWeekEnd: "" };
+}
+
+// 周线时间口径文案：滚动周（未收线）表示周中按日更新得到的盘中状态；完成周表示周五收盘后的最终周线。
+function weekCadenceText(weekState) {
+  return weekState === "rolling" ? "本周周线未收线（滚动状态，盘中信号）" : "本周周线已收线（完成状态）";
 }
 
 function regimeOf(b) {
@@ -121,7 +133,7 @@ function renderMarketAnalysis() {
   $("marketStructureText").textContent = `${data.indices.length}个指数中${positive}个上涨。${leader.name}表现最强（${leader.changePct > 0 ? "+" : ""}${fmtPct(leader.changePct, 2)}），${laggard.name}相对最弱（${laggard.changePct > 0 ? "+" : ""}${fmtPct(laggard.changePct, 2)}）。这是收盘事实描述，不等同于板块主线或次日预测。`;
   $("marketStructureSource").textContent = `来源：${data.quoteSource} · ${quoteDate}收盘`;
   $("analysisModelText").textContent = `短期广度${Math.round(snap.breadth.short * 6)}/6，中期广度${Math.round(snap.breadth.mid * 6)}/6，长期广度${Math.round(snap.breadth.long * 6)}/6；综合温度${(snap.breadth.comp * 100).toFixed(1)}，状态为“${REGIME[regime].label}”。${narrativeOf(regime, snap.breadth)}`;
-  $("analysisModelSource").textContent = `来源：A股精力管理系统模型 · 周线截至 ${snap.date}`;
+  $("analysisModelSource").textContent = `来源：A股精力管理系统模型 · 周线截至 ${snap.date}（${weekCadenceText(snap.weekState)}）`;
   const news = Array.isArray(data.news) ? data.news : [];
   $("newsGrid").innerHTML = news.length ? news.map((item) => `<article class="panel analysis-card news-card"><span class="news-type">${escapeHtml(item.sourceType || "公开信息")}</span><h3><a href="${escapeHtml(item.url)}" target="_blank" rel="noopener">${escapeHtml(item.title)}</a></h3><p>点击标题前往原始发布页面核验。本站不复制新闻正文，也不基于标题自动生成交易结论。</p><span class="src">来源：${escapeHtml(item.source)} · ${escapeHtml(item.publishedAt)} · <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener">原文</a></span></article>`).join("") : `<article class="panel analysis-card"><h3>新闻源暂不可用</h3><p>没有可展示的缓存新闻。请检查网络或数据源配置后重新运行更新脚本。</p></article>`;
   const statusMap = { updated: "本次已更新", cached: "新闻源失败，沿用上次成功缓存", unavailable: "新闻源不可用且无缓存" };
@@ -168,7 +180,7 @@ function renderSnapshot() {
   const snap = computeSnapshot();
   const regime = regimeOf(snap.breadth);
   if ($("snapshotDate")) $("snapshotDate").textContent = snap.date.replace(/^(\d{4})-(\d{2})-(\d{2})$/, "$1年$2月$3日");
-  if ($("snapshotSource")) $("snapshotSource").textContent = `数据：${snap.source}`;
+  if ($("snapshotSource")) $("snapshotSource").textContent = `数据：${snap.source} · ${weekCadenceText(snap.weekState)}`;
   const info = REGIME[regime];
   const dd = state.backtest?.currentDrawdown ?? 0;
   const latestV2 = state.performanceBacktest?.records?.at(-1);
@@ -312,7 +324,7 @@ function renderProTable(rows) {
 
 function renderTradeTicket(regime, equity, picks) {
   const names = picks.map((c) => ETF_META.find((m) => m.code === c).name).join(" + ") || "现金 / 货币工具";
-  $("tradeTicket").innerHTML = `<div class="ticket-status"><b>${REGIME[regime].friendly} · V2目标权益 ${fmtPct(equity)}</b><span>周五14:45核对预估信号；注意尾盘集合竞价订单规则</span></div><div class="ticket-grid"><div><span>持仓标的</span><b>${names}</b></div><div><span>单只目标</span><b>${picks.length ? fmtPct(equity / picks.length) : "0%"}</b></div><div><span>现金目标</span><b>${fmtPct(1 - equity)}</b></div><div><span>信号查看</span><b>周五约14:45</b></div><div><span>盘中路径</span><b>14:56前完成</b></div><div><span>盘后备选</span><b>15:05—15:30固定价</b></div></div>`;
+  $("tradeTicket").innerHTML = `<div class="ticket-status"><b>${REGIME[regime].friendly} · V2目标权益 ${fmtPct(equity)}</b><span>周五14:30起可手动更新滚动信号，14:45核对，14:56前完成；注意尾盘集合竞价订单规则</span></div><div class="ticket-grid"><div><span>持仓标的</span><b>${names}</b></div><div><span>单只目标</span><b>${picks.length ? fmtPct(equity / picks.length) : "0%"}</b></div><div><span>现金目标</span><b>${fmtPct(1 - equity)}</b></div><div><span>信号查看</span><b>周五14:30后（盘中滚动）</b></div><div><span>盘中路径</span><b>14:56前完成</b></div><div><span>盘后备选</span><b>15:05—15:30固定价</b></div></div>`;
 }
 
 function latestMomentum() {
@@ -327,7 +339,8 @@ async function syncAndBacktest() {
   btn.querySelector("span:last-child").textContent = "重新载入…";
   try {
     if (!loadBakedHistory()) throw new Error("未找到内嵌历史数据");
-    showToast("已用内嵌周线数据重新载入并回测");
+    const cadence = state.history?.weekState === "rolling" ? "滚动周·盘中信号" : "完成周";
+    showToast(`已按最新烘焙数据重新载入并回测（${cadence}）`);
     renderSnapshot();
   } catch (err) {
     showToast(`载入失败：${err.message}`, true);
@@ -744,14 +757,16 @@ function loadBakedHistory() {
   ETF_META.forEach((m) => {
     series[m.code] = H.dates.map((d, i) => ({ date: d, close: H.close[m.code][i] }));
   });
-  state.history = { dates: H.dates, series };
+  state.history = { dates: H.dates, series, weekState: H.weekState || "completed", asofWeekEnd: H.asofWeekEnd || "" };
   state.backtest = runBacktest(state.history);
   loadUserBacktest();
+  const weekTag = state.history.weekState === "rolling" ? "（滚动周·未收线）" : "";
   $("dataModeLabel").textContent = state.performanceBacktest ? "用户回测口径" : "周度回测";
-  $("sideSyncTime").textContent = state.performanceBacktest ? `市场 ${H.asof} · V2样例 ${state.performanceBacktest.endDate}` : `市场截至 ${H.asof} 周`;
+  $("sideSyncTime").textContent = state.performanceBacktest ? `市场 ${H.asof}${weekTag} · V2样例 ${state.performanceBacktest.endDate}` : `市场截至 ${H.asof} 周${weekTag}`;
   $("historySource").textContent = state.performanceBacktest
     ? `用户提供周度回测 CSV · ${state.performanceBacktest.startDate} 至 ${state.performanceBacktest.endDate}`
-    : `腾讯行情·宽基指数原始周线（6只宽基指数）· ${H.start} 至 ${H.asof}`;
+    : `腾讯行情·宽基指数原始周线（6只宽基指数）· ${H.start} 至 ${H.asof}${weekTag}`;
+  if ($("auditMarketSource")) $("auditMarketSource").textContent = `腾讯行情·六宽基周线 · ${H.start} 至 ${H.asof}${weekTag}`;
   $("auditDataBadge").textContent = state.performanceBacktest ? "用户回测已接入" : "已接入真实数据";
   $("auditDataBadge").className = "badge ok";
   return true;

@@ -27,6 +27,16 @@ if (!history || !Array.isArray(history.dates) || history.dates.length < 24) thro
 if (history.count !== history.dates.length) throw new Error("history.count 与 dates 长度不一致");
 if (history.start !== history.dates[0] || history.asof !== history.dates.at(-1)) throw new Error("历史数据起止元数据不一致");
 if (!String(history.adjust || "").includes("原始指数点位")) throw new Error("指数数据口径必须明确标注为原始指数点位");
+if (history.weekState !== "rolling" && history.weekState !== "completed") throw new Error("weekState 必须为 rolling 或 completed");
+if (!/^\d{4}-\d{2}-\d{2}$/.test(history.asofWeekEnd || "")) throw new Error("缺少 asofWeekEnd（该周周五）元数据");
+if (typeof history.incompleteWeekIncluded !== "boolean") throw new Error("incompleteWeekIncluded 必须为布尔值");
+{
+  // 校验 asofWeekEnd 确为 asof 所在周的周五
+  const anchor = new Date(`${history.asof}T12:00:00+08:00`);
+  const diffToFriday = (5 - anchor.getUTCDay() + 7) % 7;
+  anchor.setUTCDate(anchor.getUTCDate() + diffToFriday);
+  if (anchor.toISOString().slice(0, 10) !== history.asofWeekEnd) throw new Error("asofWeekEnd 不是 asof 所在周的周五");
+}
 if (new Set(history.dates).size !== history.dates.length) throw new Error("历史数据日期重复");
 for (const code of expectedCodes) {
   const rows = history.close?.[code];
@@ -62,4 +72,4 @@ for (const file of screenshotFiles) {
 }
 if (screenshotHashes.size !== screenshotFiles.length) throw new Error("项目截图存在重复文件，可能引用了错误内容");
 
-console.log(`校验通过：${history.count} 个共同周，${marketAnalysis.indices.length} 个指数快照，${marketAnalysis.news.length} 条可追溯新闻，${backtest.rows.length} 条静态样例回测记录，${requiredFiles.length} 个核心文件，${screenshotFiles.length} 张独立截图。`);
+console.log(`校验通过：${history.count} 个共同周（${history.weekState === "rolling" ? "滚动周·未收线" : "完成周"}，截至 ${history.asof}），${marketAnalysis.indices.length} 个指数快照，${marketAnalysis.news.length} 条可追溯新闻，${backtest.rows.length} 条静态样例回测记录，${requiredFiles.length} 个核心文件，${screenshotFiles.length} 张独立截图。`);

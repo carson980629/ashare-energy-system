@@ -66,7 +66,7 @@
           <article><span class="answer-no">03</span><div><small>更适合配什么？</small><b id="answer3Title">大盘 + 中盘均衡</b><p id="answer3Desc">沪深300 + 中证500 是当前组合的核心，成长风格仍需等待趋势修复。</p></div></article>
         </div>
 
-        <div class="section-heading"><div><span>本周行动卡</span><h2>周五14:45核对信号，按规则完成调仓</h2></div><p>配置比例采用V2最新完成的CSV记录；日期是周标签，不冒充实际成交日。</p></div>
+        <div class="section-heading"><div><span>本周行动卡</span><h2>周五14:30起更新滚动信号，14:45核对并完成调仓</h2></div><p>配置比例采用V2最新完成的CSV记录；日期是周标签，不冒充实际成交日。周中按天更新可得未收线滚动状态。</p></div>
         <div class="simple-allocation">
           <article class="asset-card" id="pickCard1"><div class="asset-symbol" id="pickSymbol1"></div><div><span id="pickTag1"></span><h3 id="pickName1"></h3><p id="pickDesc1"></p></div><strong id="pickWeight1"></strong></article>
           <article class="asset-card" id="pickCard2"><div class="asset-symbol" id="pickSymbol2"></div><div><span id="pickTag2"></span><h3 id="pickName2"></h3><p id="pickDesc2"></p></div><strong id="pickWeight2"></strong></article>
@@ -107,7 +107,7 @@
           <article class="explain-card"><span>01</span><h3>“站上均线”是什么意思？</h3><p>可以把均线理解为一段时间里的平均买入成本。价格高于平均成本，说明这段时间买入的人整体更容易赚钱，市场情绪通常更稳定。</p><div class="mini-demo" role="img" aria-label="周收盘价从MA12均线下方向上穿越，并运行在均线上方的示意图"><svg viewBox="0 0 320 110" preserveAspectRatio="none" aria-hidden="true"><line class="demo-grid" x1="12" y1="88" x2="308" y2="88"></line><path class="demo-ma" d="M14 72 C70 70 110 65 158 62 C210 59 254 56 306 51"></path><path class="demo-price" d="M14 87 C40 82 58 88 78 78 C102 67 119 74 140 66 C161 59 173 63 190 50 C213 34 231 43 250 31 C270 20 286 26 306 18"></path><line class="demo-cross" x1="166" y1="28" x2="166" y2="91"></line><circle class="demo-cross-dot" cx="166" cy="57" r="4"></circle><circle class="demo-price-dot" cx="306" cy="18" r="5"></circle></svg><span class="demo-label demo-label-price">周收盘价</span><span class="demo-label demo-label-ma">MA12 平均成本线</span><span class="demo-label demo-label-cross">向上穿越</span><small>收盘价在均线上方，说明近期走势相对更强</small></div></article>
           <article class="explain-card"><span>02</span><h3>“市场广度”是什么意思？</h3><p>不是看上证指数一个点位，而是看6个代表不同风格的宽基中，有多少个真正转强。参与上涨的方向越多，行情通常越健康。</p><div class="people-demo"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><small>当前：3/6短线转强，只有1/6中期转强</small></div></article>
           <article class="explain-card"><span>03</span><h3>为什么要保留现金？</h3><p>现金不是“踏空”，而是选择权。市场没有形成稳定趋势时，保留现金能降低回撤，也让你在信号改善后有资金逐步增加配置。</p><div class="shield-demo"><i>61%</i><span>安全垫</span></div></article>
-          <article class="explain-card"><span>04</span><h3>为什么每周才判断一次？</h3><p>日内消息和情绪变化很快。一般使用者只需周五14:45左右查看预估信号，在收盘附近完成调仓，其余时间无需盯盘。</p><div class="calendar-demo"><b>一</b><b>二</b><b>三</b><b>四</b><b class="active">五</b></div></article>
+          <article class="explain-card"><span>04</span><h3>为什么平时不用天天盯盘？</h3><p>数据支持按天更新：周中运行更新脚本会得到未收线的滚动周线（盘中状态）；周五14:30—14:45可手动更新核对调仓信号，周五收盘后为最终完成周线。一般使用者只需在调仓窗口附近查看信号，其余时间无需盯盘。</p><div class="calendar-demo"><b>一</b><b>二</b><b>三</b><b>四</b><b class="active">五</b></div></article>
         </div>
         <div class="regime-handbook">
           <div class="section-heading"><div><span>四种市场状态</span><h2>每个状态下，投资者该关注什么</h2></div></div>
@@ -203,7 +203,7 @@
 
         <div class="section-heading news-heading"><div><span>TRACEABLE NEWS</span><h2>可追溯公开新闻</h2></div><p id="newsUpdateStatus">只展示标题、来源、日期和原文链接，不复制新闻正文</p></div>
         <div id="newsGrid" class="analysis-grid news-grid"><article class="panel analysis-card"><h3>等待新闻数据</h3><p>运行 <code>node scripts/update-data.mjs</code> 后更新。</p></article></div>
-        <div class="performance-note analysis-boundary"><span>自动更新边界</span><p>脚本自动更新指数事实、公开新闻标题和模型结构描述；不会自动生成新闻观点、预测涨跌或把新闻直接转成交易信号。新闻源失败时沿用上次成功缓存并显示状态。</p></div>
+        <div class="performance-note analysis-boundary"><span>自动更新边界</span><p>脚本自动更新指数事实、公开新闻标题和模型结构描述；不会自动生成新闻观点、预测涨跌或把新闻直接转成交易信号。新闻源失败时沿用上次成功缓存并显示状态。<b>周线口径</b>：周中为未收线滚动周（盘中信号，按天更新），周五15:05后为完成周；指数快照与新闻按交易日更新。</p></div>
       </section>
 
       <section id="engine" class="view-section">
@@ -215,8 +215,8 @@
       <section id="audit" class="view-section">
         <div class="section-title"><div><span>DATA & ASSUMPTIONS</span><h2>数据来源与使用边界</h2></div><p>知道数字从哪里来，也知道它不能说明什么。</p></div>
         <div class="audit-grid">
-          <article class="panel"><div class="panel-head"><h3>数据源状态</h3><span id="auditDataBadge" class="badge warn">快照模式</span></div><div class="source-list"><p><span>当前市场诊断</span><b>腾讯行情·六宽基周线 · 2026-08-27</b></p><p><span>策略历史表现</span><b id="historySource">用户提供周度回测 CSV</b></p><p><span>执行时区</span><b>Asia/Shanghai (UTC+8)</b></p><p><span>V2样例区间</span><b>2023-01-02 至 2026-08-24 · 187周</b></p><p><span>样例更新边界</span><b>静态回测样例；行情脚本不会延长、重算净值或年度归因</b></p><p><span>夏普差异</span><b>CSV复算0.74；报告0.73，属方法/取整差异</b></p></div></article>
-          <article class="panel"><div class="panel-head"><h3>模型假设</h3><span class="badge ok">可复现</span></div><div class="source-list"><p><span>策略版本</span><b>V2 进阶增强版</b></p><p><span>判断频率</span><b>每周收盘</b></p><p><span>用户执行流程</span><b>周五14:45核对；14:56前执行或盘后固定价</b></p><p><span>回测成交口径</span><b>最终周收盘信号 + 同收盘价（理想化、有偏差）</b></p><p><span>动量窗口</span><b>4周 + 12周复合</b></p><p><span>运行位置</span><b>本地浏览器</b></p></div></article>
+          <article class="panel"><div class="panel-head"><h3>数据源状态</h3><span id="auditDataBadge" class="badge warn">快照模式</span></div><div class="source-list"><p><span>当前市场诊断</span><b id="auditMarketSource">腾讯行情·六宽基周线 · 待载入</b></p><p><span>策略历史表现</span><b id="historySource">用户提供周度回测 CSV</b></p><p><span>执行时区</span><b>Asia/Shanghai (UTC+8)</b></p><p><span>V2样例区间</span><b>2023-01-02 至 2026-08-24 · 187周</b></p><p><span>样例更新边界</span><b>静态回测样例；行情脚本不会延长、重算净值或年度归因</b></p><p><span>夏普差异</span><b>CSV复算0.74；报告0.73，属方法/取整差异</b></p></div></article>
+          <article class="panel"><div class="panel-head"><h3>模型假设</h3><span class="badge ok">可复现</span></div><div class="source-list"><p><span>策略版本</span><b>V2 进阶增强版</b></p><p><span>判断频率</span><b>按天更新：周中滚动周（未收线·盘中信号），周五15:05后为完成周</b></p><p><span>用户执行流程</span><b>周五14:30起可手动更新滚动信号；14:45核对；14:56前执行或盘后固定价</b></p><p><span>回测成交口径</span><b>最终周收盘信号 + 同收盘价（理想化、有偏差）</b></p><p><span>动量窗口</span><b>4周 + 12周复合</b></p><p><span>运行位置</span><b>本地浏览器</b></p></div></article>
         </div>
         <article class="panel import-panel"><div><h3>导入自己的行情数据</h3><p>CSV字段：date, code, close。至少覆盖6只指数及24个共同交易周。</p></div><label class="upload-btn">选择 CSV<input id="csvInput" type="file" accept=".csv,text/csv"></label></article>
         <article class="panel caveat-panel"><h3>使用这套模型前，必须知道的四件事</h3><div class="caveat-grid"><p><b>它不评价公司基本面</b><span>模型只判断整体市场环境，个股仍需研究商业模式、估值与业绩。</span></p><p><b>回测不是实盘业绩</b><span>策略表现直接采用用户V2 CSV净值；交易成本、滑点等假设以该CSV生成过程为准。</span></p><p><b>成交口径偏乐观</b><span>最终周收盘信号并按同一收盘价成交存在偏差；实盘14:45只是预估，且ETF收盘集合竞价阶段的订单类型受交易规则约束。</span></p><p><b>当前与历史分开</b><span>市场诊断和分析页按数据脚本更新；V2净值与年度归因固定截至2026-08-24，两者不能混为同一时点。</span></p></div></article>

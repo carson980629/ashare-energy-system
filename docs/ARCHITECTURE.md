@@ -15,8 +15,14 @@
 - `data/history-baked.js`：六宽基共同日期周收盘，用于市场状态与内部对照回测。
 - `data/market-analysis.js`：7个指数收盘快照与可追溯新闻标题，用于市场分析页。
 - `data/user-backtest-data.js`：固定截至2026-08-24的用户V2静态样例净值与持仓，用于页面绩效展示。
-- `scripts/update-data.mjs`：配置驱动的周线、指数快照、公开新闻抓取和前端数据生成。
+- `scripts/update-data.mjs`：配置驱动的周线、指数快照、公开新闻抓取和前端数据生成；周线默认保留未收线滚动周（按天更新），并通过 `weekState` / `asofWeekEnd` 标注 rolling 或 completed 口径。
 - `scripts/validate.mjs`：静态资源和数据契约校验。
+
+## 更新频率与口径
+
+- 周线按天可更新：周一至周四运行得到 `weekState: "rolling"`（未收线滚动周，盘中信号）；周五14:30—14:45可手动更新供调仓参考；周五15:05（北京时间）后为 `completed`（完成周）。
+- 指数快照（日线）与新闻按交易日更新。
+- 仓库内置 `.github/workflows/update-data.yml`：工作日北京时间14:35自动更新并提交推送（有变化才提交），支持手动触发；推送自动触发 Pages 部署。
 
 ## 关键边界
 

@@ -34,6 +34,20 @@ function shanghaiDate() {
   return shanghaiNow().date;
 }
 
+// 时间口径：周线按“完成周 / 滚动周”分类。
+// - 数据最新共同交易日的所在周（周一至周五）视为一周；该周的周五收盘（15:05 北京时间）未到 → rolling（未收线滚动状态）
+// - 周五收盘后运行 → completed（完成周）。
+// 因此周一至周四每天运行拿到的是滚动周线（盘中状态）；周五 14:30—14:45 手动/自动运行同样为滚动信号，仅供调仓参考；周五收盘后为最终周线。
+function classifyWeek(asof) {
+  const anchor = new Date(`${asof}T12:00:00+08:00`);
+  const diffToFriday = (5 - anchor.getUTCDay() + 7) % 7;
+  anchor.setUTCDate(anchor.getUTCDate() + diffToFriday);
+  const asofWeekEnd = anchor.toISOString().slice(0, 10);
+  const now = shanghaiNow();
+  const completed = now.date > asofWeekEnd || (now.date === asofWeekEnd && (now.hour > 15 || (now.hour === 15 && now.minute >= 5)));
+  return { weekState: completed ? "completed" : "rolling", asofWeekEnd };
+}
+
 function validateConfig(config) {
   if (config.provider !== "tencent-fqkline") throw new Error(`不支持的数据源：${config.provider}`);
   if (config.frequency !== "week") throw new Error("当前适配器仅支持 week 周线");
@@ -161,10 +175,12 @@ async function buildMarketAnalysis(config, endDate) {
   };
 }
 
-function align(series, symbols, minimumCommonRows, includeIncompleteWeek) {
+// keepRollingWeek：默认 true。周中运行保留尚未收线的当周滚动周线（日频更新所必需）；
+// 仅当配置显式设置 includeIncompleteWeek:false 时才剔除，退回到“只保留完成周”的旧行为。
+function align(series, symbols, minimumCommonRows, keepRollingWeek = true) {
   const dateSets = symbols.map((symbol) => new Set(series[symbol.code].map((row) => row.date)));
   let commonDates = [...dateSets[0]].filter((date) => dateSets.every((set) => set.has(date))).sort();
-  if (!includeIncompleteWeek && commonDates.length && commonDates.at(-1) === shanghaiDate()) {
+  if (!keepRollingWeek && commonDates.length && commonDates.at(-1) === shanghaiDate()) {
     const latestDate = commonDates.at(-1);
     const weekday = new Date(`${latestDate}T12:00:00+08:00`).getUTCDay();
     const now = shanghaiNow();
@@ -187,13 +203,17 @@ validateConfig(config);
 const endDate = config.endDate === "auto" ? shanghaiDate() : config.endDate;
 const marketAnalysis = await buildMarketAnalysis(config, endDate);
 const entries = await Promise.all(config.symbols.map(async (symbol) => [symbol.code, await fetchSymbol(config, symbol, endDate)]));
-const aligned = align(Object.fromEntries(entries), config.symbols, config.minimumCommonRows || 24, config.includeIncompleteWeek === true);
+const keepRollingWeek = config.includeIncompleteWeek !== false;
+const aligned = align(Object.fromEntries(entries), config.symbols, config.minimumCommonRows || 24, keepRollingWeek);
+const weekInfo = classifyWeek(aligned.dates.at(-1));
 const artifact = {
   freq: "weekly",
   source: "腾讯行情公开接口·宽基指数周线",
   provider: config.provider,
   adjust: "原始指数点位（指数无需复权）",
-  incompleteWeekIncluded: config.includeIncompleteWeek === true,
+  incompleteWeekIncluded: keepRollingWeek,
+  weekState: weekInfo.weekState,
+  asofWeekEnd: weekInfo.asofWeekEnd,
   asof: aligned.dates.at(-1),
   start: aligned.dates[0],
   count: aligned.dates.length,
@@ -205,6 +225,7 @@ const outputPath = resolve(root, config.output || "data/history-baked.js");
 await writeFile(outputPath, `window.BAKED_HISTORY = ${JSON.stringify(artifact)};\n`, "utf8");
 console.log(`已更新 ${outputPath}`);
 console.log(`共同周线：${artifact.count} 条，${artifact.start} 至 ${artifact.asof}`);
+console.log(`周线口径：${artifact.weekState === "rolling" ? "滚动周（本周未收线，盘中状态）" : "完成周（本周已收线）"}，该周周五 ${artifact.asofWeekEnd} 收盘判定`);
 if (marketAnalysis) {
   await writeFile(marketAnalysis.outputPath, `window.MARKET_ANALYSIS = ${JSON.stringify(marketAnalysis.artifact)};\n`, "utf8");
   console.log(`已更新 ${marketAnalysis.outputPath}`);

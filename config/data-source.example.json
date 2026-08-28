@@ -3,7 +3,7 @@
   "endpoint": "https://web.ifzq.gtimg.cn/appstock/app/fqkline/get",
   "frequency": "week",
   "adjust": "none",
-  "includeIncompleteWeek": false,
+  "includeIncompleteWeek": true,
   "startDate": "2020-01-01",
   "endDate": "auto",
   "minimumCommonRows": 24,

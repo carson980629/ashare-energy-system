@@ -1,0 +1,38 @@
+name: Update market data
+
+# 每日自动更新（工作日北京时间 14:35，即周五 14:30—14:45 调仓窗口前的盘中滚动信号）
+# 也可在 Actions 页手动点击 Run workflow，随时按最新滚动周线更新。
+on:
+  schedule:
+    - cron: "35 6 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: market-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Pre-check committed state
+        run: npm run check
+      - name: Refresh market data
+        run: |
+          cp config/data-source.example.json config/data-source.json
+          node scripts/update-data.mjs
+          node scripts/validate.mjs
+      - name: Commit and push refreshed data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/history-baked.js data/market-analysis.js
+          git diff --cached --quiet || git commit -m "chore(data): refresh market data $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push

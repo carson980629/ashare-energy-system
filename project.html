@@ -78,7 +78,7 @@
     </section>
 
     <section class="content-section data-section">
-      <div><p class="eyebrow">REPRODUCIBLE DATA</p><h2>数据更新不依赖前端跨域请求</h2><p>维护脚本在本地读取配置，拉取周线、校验共同日期与数据质量，再生成浏览器可直接加载的 <code>data/history-baked.js</code>。默认适配腾讯公开行情接口，也可按同一数据契约替换供应商。</p></div>
+      <div><p class="eyebrow">REPRODUCIBLE DATA</p><h2>数据可按天更新，周线口径清晰标注</h2><p>维护脚本在本地读取配置，拉取周线、校验共同日期与数据质量，再生成浏览器可直接加载的 <code>data/history-baked.js</code>。默认适配腾讯公开行情接口，也可按同一数据契约替换供应商。<b>周中运行得到未收线滚动周线（盘中状态），周五14:30—14:45可手动更新核对调仓信号，周五15:05后为完成周</b>；内置 GitHub Actions 工作流工作日北京时间14:35自动更新，也可手动触发。</p></div>
       <pre><code>copy config/data-source.example.json config/data-source.json
 node scripts/update-data.mjs
 node scripts/validate.mjs
