@@ -34,6 +34,13 @@ function shanghaiDate() {
   return shanghaiNow().date;
 }
 
+function classifyQuoteDate(quoteDate) {
+  const now = shanghaiNow();
+  const isCurrentDate = quoteDate === now.date;
+  const afterClose = now.hour > 15 || (now.hour === 15 && now.minute >= 5);
+  return isCurrentDate && !afterClose ? "intraday" : "closed";
+}
+
 // 时间口径：周线按“完成周 / 滚动周”分类。
 // - 数据最新共同交易日的所在周（周一至周五）视为一周；该周的周五收盘（15:05 北京时间）未到 → rolling（未收线滚动状态）
 // - 周五收盘后运行 → completed（完成周）。
@@ -166,6 +173,7 @@ async function buildMarketAnalysis(config, endDate) {
       generatedAt: new Date().toISOString(),
       quoteSource: "腾讯行情公开接口·指数日线",
       quoteDate: quoteDates[0],
+      quoteState: classifyQuoteDate(quoteDates[0]),
       indices,
       newsSourceMode: "标题与链接聚合，不复制新闻正文",
       newsStatus,

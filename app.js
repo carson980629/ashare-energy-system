@@ -116,10 +116,12 @@ function renderMarketAnalysis() {
     return;
   }
   const quoteDate = data.quoteDate || data.indices[0].date;
+  const quoteState = data.quoteState === "intraday" ? "intraday" : "closed";
+  const quoteStateText = quoteState === "intraday" ? "盘中快照·未定盘" : "收盘";
   const generated = new Date(data.generatedAt);
   const generatedText = Number.isNaN(generated.getTime()) ? "生成时间未知" : generated.toLocaleString("zh-CN", { timeZone: "Asia/Shanghai", hour12: false });
-  $("analysisAsOf").textContent = `指数截至 ${quoteDate} 收盘 · 数据生成 ${generatedText}`;
-  $("analysisQuoteSource").textContent = `来源：${data.quoteSource} · 单日涨跌按相邻两个交易日收盘计算 · ${data.indices.length}个指数`;
+  $("analysisAsOf").textContent = `指数截至 ${quoteDate} ${quoteStateText} · 数据生成 ${generatedText}`;
+  $("analysisQuoteSource").textContent = `来源：${data.quoteSource} · ${quoteState === "intraday" ? "涨跌按盘中最新价与前一交易日收盘计算" : "单日涨跌按相邻两个交易日收盘计算"} · ${data.indices.length}个指数`;
   $("analysisIndexStrip").innerHTML = data.indices.map((item) => {
     const cls = item.changePct > 0 ? "rise" : item.changePct < 0 ? "fall" : "muted";
     const sign = item.changePct > 0 ? "+" : "";
@@ -130,8 +132,8 @@ function renderMarketAnalysis() {
   const laggard = sorted.at(-1);
   const positive = sorted.filter((item) => item.changePct > 0).length;
   $("marketStructureTitle").textContent = positive === data.indices.length ? "指数结构：全线上涨" : positive === 0 ? "指数结构：普遍回落" : "指数结构：涨跌分化";
-  $("marketStructureText").textContent = `${data.indices.length}个指数中${positive}个上涨。${leader.name}表现最强（${leader.changePct > 0 ? "+" : ""}${fmtPct(leader.changePct, 2)}），${laggard.name}相对最弱（${laggard.changePct > 0 ? "+" : ""}${fmtPct(laggard.changePct, 2)}）。这是收盘事实描述，不等同于板块主线或次日预测。`;
-  $("marketStructureSource").textContent = `来源：${data.quoteSource} · ${quoteDate}收盘`;
+  $("marketStructureText").textContent = `${data.indices.length}个指数中${positive}个上涨。${leader.name}表现最强（${leader.changePct > 0 ? "+" : ""}${fmtPct(leader.changePct, 2)}），${laggard.name}相对最弱（${laggard.changePct > 0 ? "+" : ""}${fmtPct(laggard.changePct, 2)}）。这是${quoteState === "intraday" ? "盘中快照" : "收盘事实"}描述，不等同于板块主线或次日预测。`;
+  $("marketStructureSource").textContent = `来源：${data.quoteSource} · ${quoteDate}${quoteStateText}`;
   $("analysisModelText").textContent = `短期广度${Math.round(snap.breadth.short * 6)}/6，中期广度${Math.round(snap.breadth.mid * 6)}/6，长期广度${Math.round(snap.breadth.long * 6)}/6；综合温度${(snap.breadth.comp * 100).toFixed(1)}，状态为“${REGIME[regime].label}”。${narrativeOf(regime, snap.breadth)}`;
   $("analysisModelSource").textContent = `来源：A股精力管理系统模型 · 周线截至 ${snap.date}（${weekCadenceText(snap.weekState)}）`;
   const news = Array.isArray(data.news) ? data.news : [];
@@ -176,10 +178,22 @@ function narrativeOf(regime, b) {
   return "多数宽基指数站上中短期趋势，市场风险偏好回升。这个阶段可以更积极，但也要注意单一风格过热后的回落风险。";
 }
 
+function breadthExplanation(period, ratio) {
+  const count = Math.round(ratio * 6);
+  const labels = { short: "月度平均价格", mid: "季度平均价格", long: "半年平均价格" };
+  const tones = {
+    short: count === 0 ? "短线尚未出现宽基修复。" : count <= 2 ? "短线修复仍局限在少数方向。" : count <= 4 ? "短线已有一定回暖，但还不是全面转强。" : "短线回暖范围较广。",
+    mid: count === 0 ? "中期趋势全面承压，是当前最需要警惕的信号。" : count <= 2 ? "中期趋势仍偏弱。" : count <= 4 ? "中期结构处于修复或分化阶段。" : "中期趋势整体较强。",
+    long: count === 0 ? "长期结构全面偏弱，修复仍需时间。" : count <= 2 ? "长期结构仍偏弱。" : count <= 4 ? "长期结构冷暖不一。" : "长期趋势已有较广泛支撑。"
+  };
+  return `6个主要方向中，有${count}个站上${labels[period]}。${tones[period]}`;
+}
+
 function renderSnapshot() {
   const snap = computeSnapshot();
   const regime = regimeOf(snap.breadth);
   if ($("snapshotDate")) $("snapshotDate").textContent = snap.date.replace(/^(\d{4})-(\d{2})-(\d{2})$/, "$1年$2月$3日");
+  if ($("snapshotState")) $("snapshotState").textContent = snap.weekState === "rolling" ? "滚动周诊断" : "收盘诊断";
   if ($("snapshotSource")) $("snapshotSource").textContent = `数据：${snap.source} · ${weekCadenceText(snap.weekState)}`;
   const info = REGIME[regime];
   const dd = state.backtest?.currentDrawdown ?? 0;
@@ -221,9 +235,13 @@ function renderSnapshot() {
   $("policyHint").textContent = "V2分段仓位映射";
   $("engineComp") && ($("engineComp").textContent = (snap.breadth.comp * 100).toFixed(1));
   $("engineRegime") && ($("engineRegime").textContent = info.label.replace("态", ""));
+  $("breadthStoryTitle").textContent = regime === "crisis" ? "为什么是全面承压？" : regime === "bear" ? "为什么仍要以守为主？" : regime === "shock" ? "为什么说市场冷暖交织？" : "为什么可以更积极？";
   $("shortBreadth").textContent = fmtPct(snap.breadth.short);
   $("midBreadth").textContent = fmtPct(snap.breadth.mid);
   $("longBreadth").textContent = fmtPct(snap.breadth.long);
+  $("shortBreadthText").textContent = breadthExplanation("short", snap.breadth.short);
+  $("midBreadthText").textContent = breadthExplanation("mid", snap.breadth.mid);
+  $("longBreadthText").textContent = breadthExplanation("long", snap.breadth.long);
   $("shortBar").style.width = fmtPct(snap.breadth.short);
   $("midBar").style.width = fmtPct(snap.breadth.mid);
   $("longBar").style.width = fmtPct(snap.breadth.long);

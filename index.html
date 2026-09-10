@@ -47,7 +47,7 @@
       <section id="overview" class="view-section active-view">
         <div class="friendly-hero">
           <div class="hero-copy">
-            <div class="asof-line"><span class="live-pill"><i></i>收盘诊断</span><span id="snapshotDate">2026年8月27日</span><span id="snapshotSource" class="source-chip">数据：腾讯行情·宽基指数原始周线</span></div>
+            <div class="asof-line"><span class="live-pill"><i></i><span id="snapshotState">收盘诊断</span></span><span id="snapshotDate">2026年8月27日</span><span id="snapshotSource" class="source-chip">数据：腾讯行情·宽基指数原始周线</span></div>
             <div class="weather-line"><span class="weather-icon">☁</span><div><span class="plain-label">当前市场体感</span><h2 id="regimeTitle">偏冷，适合以守为主</h2></div></div>
             <p id="regimeNarrative">市场有一些短线回暖，但多数宽基指数的中期趋势还没有转强。现在更像雨后放晴的早期，不适合因为一天上涨就明显加仓。</p>
             <div class="hero-actions"><button class="secondary-btn jump-btn" data-jump="guide">为什么这样判断</button><button class="text-btn jump-btn" data-jump="portfolio">查看配置方案 <span>→</span></button></div>
@@ -75,11 +75,11 @@
 
         <div class="insight-grid">
           <article class="story-card">
-            <div class="story-head"><span class="story-icon">脉</span><div><small>市场脉搏</small><h3>为什么说只是“短线回暖”？</h3></div></div>
+            <div class="story-head"><span class="story-icon">脉</span><div><small>市场脉搏</small><h3 id="breadthStoryTitle">短中长期趋势有多健康？</h3></div></div>
             <div class="pulse-visual">
-              <div class="pulse-item"><div><span>最近1个月</span><b id="shortBreadth">50.0%</b></div><div class="friendly-track"><i id="shortBar" style="width:50%"></i></div><p>6个主要方向中，有3个回到月度平均价格之上，短线不算差。</p></div>
-              <div class="pulse-item warning"><div><span>最近1个季度</span><b id="midBreadth">16.7%</b></div><div class="friendly-track"><i id="midBar" style="width:16.7%"></i></div><p>只有1个方向站上季度平均价格，这是当前最需要警惕的信号。</p></div>
-              <div class="pulse-item"><div><span>最近半年</span><b id="longBreadth">33.3%</b></div><div class="friendly-track"><i id="longBar" style="width:33.3%"></i></div><p>长期结构仍偏弱，趋势改善需要更多宽基一起参与。</p></div>
+              <div class="pulse-item"><div><span>最近1个月</span><b id="shortBreadth">50.0%</b></div><div class="friendly-track"><i id="shortBar" style="width:50%"></i></div><p id="shortBreadthText">6个主要方向中，有3个回到月度平均价格之上，短线不算差。</p></div>
+              <div class="pulse-item warning"><div><span>最近1个季度</span><b id="midBreadth">16.7%</b></div><div class="friendly-track"><i id="midBar" style="width:16.7%"></i></div><p id="midBreadthText">只有1个方向站上季度平均价格，这是当前最需要警惕的信号。</p></div>
+              <div class="pulse-item"><div><span>最近半年</span><b id="longBreadth">33.3%</b></div><div class="friendly-track"><i id="longBar" style="width:33.3%"></i></div><p id="longBreadthText">长期结构仍偏弱，趋势改善需要更多宽基一起参与。</p></div>
             </div>
           </article>
           <article class="story-card turning-card">

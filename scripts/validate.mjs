@@ -45,6 +45,7 @@ for (const code of expectedCodes) {
 }
 if (!marketAnalysis || !Array.isArray(marketAnalysis.indices) || marketAnalysis.indices.length !== 7) throw new Error("市场分析指数快照必须包含7个指数");
 if (!/^\d{4}-\d{2}-\d{2}$/.test(marketAnalysis.quoteDate || "")) throw new Error("市场分析缺少有效指数日期");
+if (marketAnalysis.quoteState !== "intraday" && marketAnalysis.quoteState !== "closed") throw new Error("市场分析 quoteState 必须为 intraday 或 closed");
 if (marketAnalysis.indices.some((item) => item.date !== marketAnalysis.quoteDate || !Number.isFinite(item.close) || item.close <= 0 || !Number.isFinite(item.changePct))) throw new Error("市场分析指数日期或数值无效");
 if (!Array.isArray(marketAnalysis.news) || marketAnalysis.news.some((item) => !item.title || !item.source || !/^https:\/\//.test(item.url) || !/^\d{4}-\d{2}-\d{2}/.test(item.publishedAt))) throw new Error("市场分析新闻缺少标题、来源、日期或HTTPS原文链接");
 if (!backtest || !Array.isArray(backtest.rows) || backtest.rows.length !== 187) throw new Error("V2静态样例必须恰好包含187周");
